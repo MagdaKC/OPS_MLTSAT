@@ -201,7 +201,7 @@ cp t1aa t1a
    ####
 sed -n "${arcline},${nextline0}p" t0 >> t2
 cat /umbc/epavlis/data01/LOCAL/magdak/MISSIONS/d_base/obscor/DEFAULT_JCET_mean >> t2
-cat /umbc/epavlis/data01/LOCAL/magdak/MISSIONS/d_base/obscor/MIXED/${ARC} >> t2
+cat /umbc/epavlis/data01/LOCAL/magdak/MISSIONS/d_base/obscor/MIXED/${ARC}_OBSCOR >> t2
                         sed -n "${nextline}p" t0 >> t2
 
 
