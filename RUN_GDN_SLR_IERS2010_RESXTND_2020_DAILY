@@ -1,0 +1,464 @@
+#!/bin/ksh
+#
+#
+#    e.g.  RUN_GDN_SLR_IERS2010_RESXTND_2020 ARC [LABEL]  [SAT]  [YR]  [CASE] [SUBSOL]\007"
+#                                   
+#
+#
+#
+#
+
+${SCR_DBG}set -xv
+set -vx
+
+
+#  if [ `expr $#` -lt 1 ]; then
+#     echo "Usage: RUN_GDN_SLR_IERS2010_RESXTND_2020 ARC [LABEL] [SAT] [YR] [CASE] [SUBSOL]\007"
+#     exit 100
+#  fi
+
+#
+#echo "  #  "
+#echo "  #    Begin  'RUN_GDN_SLR_IERS2010_RESXTND_2020'    "
+#echo "  #  "
+
+SCR_NAME=RUN_GDN_SLR_IERS2010_RESXTND_2020
+SCR_PARM=6
+SCR_LIST="ARC LABEL SAT YR CASE SUBSOL"
+SCR_VERS=200203.0
+
+
+if [ `expr $#` -lt $SCR_PARM ]; then
+   echo "Usage: $SCR_NAME ${SCR_LIST}\007"
+   exit 101
+fi
+
+DateTime=`date '+DATE: %m/%d/%y  TIME: %H:%M:%S'`
+
+echo " # "
+echo " #  $SCR_NAME $* "
+echo " # "
+echo " #  Version $SCR_VERS "
+echo " # "
+echo " #  Run Date $DateTime "
+echo " # "
+
+
+ARC=$1
+LABEL=${2:-1}
+SAT=${3:-GISL1}
+YR=${4:-99}
+CASE=${5:-DRW}
+SUBSOL=${6:-A}
+
+SITEFILE=NONE
+
+
+#SCRIPTS=/space/users/epavlis/scripts/OPS
+#MAIN_PATH=/space/users/epavlis
+#DISK=space/MISSIONS
+
+#export SCRIPTS MAIN_PATH DISK
+
+##ETIDE_MDL=NULL
+##ETIDE_MDL=etides.fxd
+##
+##OTIDE_MDL=otide_csr4/otide_csr4.fxd
+##OTIDE_MDL=otide_fes2002/otide_fes2002.fxd
+##OTIDE_MDL=tides.ray00_wAIR.fxd
+##OTIDE_MDL=otide_got00/40otide_got00.fxd
+##OTIDE_MDL=otide_got00/30otide_got00.fxd
+##OTIDE_MDL=otide_got00/otide_got00.fxd
+##OTIDE_MDL=otide_got00/20otide_got00.fxd
+##
+##GRAVITY_MDL=GGM02C.30x30
+##
+##export GRAVITY_MDL
+##
+##export ETIDE_MDL OTIDE_MDL 
+
+#GDN_2S=geodyn_2S_0407p2      # OLD
+#GDN_2S=BIG_TIDES_2S.x         # NEW
+#GDN_2S=giis0511p22.x         # NEW
+#GDN_2S=giis0511p17.x         # NEW 0511 with corrections for EOP oloads and tables overflow
+##GDN_2S=giis0707p2j1.x         # NEW 0707 version small tides
+##GDN_2S=giis0707p2j2.x         # NEW 0707 version BIG tides
+#GDN_2S=giis0712p00.x          # NEW 0712 version small tides
+#GDN_2S=giis0712p26.x          # NEW 0712 new version BIG tides
+#GDN_2S=giis0812p10_sun_i64_wDEPsFIX_RM=8.x   # NEW 0812 version for BIG tides
+#
+#GDN_2E=geodyn_2E_0407p3      # OLD
+#GDN_2E=giie0511p23_IRA-m+NAT.x  # NEW with + Neil Ashby's correction term
+#GDN_2E=giie0511p23_IRA-m-NAT.x  # NEW with - Neil Ashby's correction term
+#GDN_2E=giie0511p21_IRA-m.x   # NEW
+#GDN_2E=giie0511p15.x         # NEW 0511 with corrections for EOP oloads and tables overflow
+##GDN_2E=giie0707p4j1_IRA-m.x # NEW 0707
+#GDN_2E=giie0712p10_IRA-m.x  # NEW 0712
+#GDN_2E=giie0712p13_IRA-m.x  # NEWer 0712
+#GDN_2E=giie0812p10_sun_i64_RM=8.x  # NEW 0812
+
+#export GDN_2S GDN_2E
+
+#CURRENT_APLO=040517
+
+#export CURRENT_APLO
+
+
+if [ "${CASE}" = "DRW" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_ALL
+  TCASE=DR
+
+elif [ "${CASE}" = "DRWcpp" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_ALL_IERS
+  TCASE=DR
+  SITEFILE=$ARC
+
+elif [ "${CASE}" = "DRWC" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_ALL_IERS
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=DR
+
+elif [ "${CASE}" = "DRWbs" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_ALL_BAKSUB
+  TCASE=DR
+  export GRVTIM=$SUBSOL
+  export SUBSOL=.
+
+elif [ "${CASE}" = "DRWx" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_IIx
+  TCASE=DR
+
+elif [ "${CASE}" = "DRWy" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_IIy
+  TCASE=DR
+
+elif [ "${CASE}" = "DRWM" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_MM
+  TCASE=DR
+
+elif [ "${CASE}" = "DRWN" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_NMF
+  TCASE=DR
+
+elif [ "$CASE" = "DRM" ]; then
+
+  CASEDIR=MONTHLY
+  PROG=GEODYN_II_ALL
+  TCASE=DR
+
+elif [ "$CASE" = "DRFC" ]; then
+
+  CASEDIR=FORTNTLY
+  PROG=GEODYN_II_ALL_IERS_pre93_15D
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=DR
+
+elif [ "$CASE" = "DRMC" ]; then
+
+  CASEDIR=MONTHLY
+  PROG=GEODYN_II_ALL_IERS_pre93
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=DR
+
+elif [ "$CASE" = "DRQC" ]; then
+
+  CASEDIR=QUARTERLY
+  PROG=GEODYN_II_ALL_IERS_pre93
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=DR
+
+elif [ "$CASE" = "EMTW" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_ALL
+  TCASE=EMT
+
+elif [ "$CASE" = "EMTWC" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_ALL_IERS
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=EMT
+
+elif [ "$CASE" = "EMTM" ]; then
+
+  CASEDIR=MONTHLY
+  PROG=GEODYN_II_ALL
+  TCASE=EMT
+
+elif [ "$CASE" = "EMTW_mid" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_ALL
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=EMT
+  SITEFILE=$ARC
+
+elif [ "$CASE" = "EMTW_midC" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_ALL_IERS
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=EMT
+  SITEFILE=$ARC
+
+elif [ "$CASE" = "ORBWC" ]; then
+
+  CASEDIR=DAILY
+  PROG=GEODYN_II_ALL_IERS
+  PROG=GEODYN_II_ALL_IERS2010_ORB
+  TCASE=ORB
+
+elif [ "$CASE" = "EMTM_mid" ]; then
+
+  CASEDIR=MONTHLY
+  PROG=GEODYN_II_ALL
+  TCASE=EMT
+  SITEFILE=$ARC
+
+elif [ "$CASE" = "EMTFC" ]; then
+
+  CASEDIR=FORTNTLY
+  PROG=GEODYN_II_ALL_IERS_pre93e_15D
+  PROG=GEODYN_II_ALL_IERS_pre93_15D
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=EMT
+
+elif [ "$CASE" = "EMTQC" ]; then
+
+  CASEDIR=QUARTERLY
+  PROG=GEODYN_II_ALL_IERS_pre93e
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=EMT
+
+elif [ "$CASE" = "EMTMC" ]; then
+
+  CASEDIR=MONTHLY
+  PROG=GEODYN_II_ALL_IERS_Me
+  PROG=GEODYN_II_ALL_IERS2014_RESXTND_2020
+  TCASE=EMT
+
+elif [ "$CASE" = "EMTF_midC" ]; then
+
+  CASEDIR=FORTNTLY
+  PROG=GEODYN_II_ALL_IERS_pre93e_15D
+  PROG=GEODYN_II_ALL_IERS_pre93_15D
+  PROG=GEODYN_II_ALL_IERS2010
+  TCASE=EMT
+  SITEFILE=$ARC
+
+elif [ "$CASE" = "EMTM_midC" ]; then
+
+  CASEDIR=MONTHLY
+  PROG=GEODYN_II_ALL_IERS_pre93e_15D
+  PROG=GEODYN_II_ALL_IERS_pre93_15D
+  PROG=GEODYN_II_ALL_IERS2010
+  TCASE=EMT
+  SITEFILE=$ARC
+
+elif [ "$CASE" = "EMTQ_midC" ]; then
+
+  CASEDIR=QUARTERLY
+  PROG=GEODYN_II_ALL_IERS_pre93e
+  PROG=GEODYN_II_ALL_IERS2010
+  TCASE=EMT
+  SITEFILE=$ARC
+
+elif [ "$CASE" = "drG" ]; then
+
+  CASEDIR=DAILY
+  PROG=HP2HP_LT_SLR_GFZ
+  TCASE=DR
+
+elif [ "$CASE" = "PP6A" ]; then
+
+  CASEDIR=MONTHLY/PP6
+  PROG=HP2HP_LT_SLR_PP
+  TCASE=EMT
+  TCASE=DR
+
+elif [ "$CASE" = "PP6B" ]; then
+
+  CASEDIR=MONTHLY/PP6
+  PROG=HP2HP_LT_SLR_PP
+  TCASE=EMT
+  TCASE=DR
+
+elif [ "$CASE" = "PP6Ae" ]; then
+
+  CASEDIR=MONTHLY/PP6
+  PROG=HP2HP_LT_SLR_PP
+  TCASE=DR
+  TCASE=EMT
+
+elif [ "$CASE" = "PP6Be" ]; then
+
+  CASEDIR=MONTHLY/PP6
+  PROG=HP2HP_LT_SLR_PP
+  TCASE=DR
+  TCASE=EMT
+
+elif [ "$CASE" = "PP6d" ]; then
+
+  CASEDIR=MONTHLY/PP6
+  PROG=HP2HP_LT_SLR_PP
+  TCASE=DR
+
+elif [ "$CASE" = "PP6e" ]; then
+
+  CASEDIR=MONTHLY/PP6
+  PROG=HP2HP_LT_SLR_PP
+  TCASE=EMT
+
+elif [ "$CASE" = "PP6o" ]; then
+
+  CASEDIR=ORBIT/PP6
+  PROG=HP2HP_LT_SLR_PP
+  TCASE=DR
+
+elif [ "$CASE" = "" ]; then
+
+  CASEDIR=.
+  PROG=GEODYN_II_ALL
+  TCASE=DR
+
+elif [ "$CASE" = "og" ]; then
+
+  CASEDIR=.
+  PROG=HP2HP_LT_og
+
+fi
+
+STAGE=$CASEDIR
+
+export CASEDIR STAGE
+
+
+if [ "$SAT" = "GISL1" ];then
+   LOCALDSK=tmp
+   SV=L1
+   HPENGN=gravity
+
+elif [ "$SAT" = "GISL2" ];then
+   LOCALDSK=tmp
+   SV=L2
+   HPENGN=gravity
+
+elif [ "$SAT" = "STELLA" ];then
+  LOCALDSK=tmp
+  SV=STELLA
+  HPENGN=gravity
+
+elif [ "$SAT" = "STARL" ];then
+   LOCALDSK=tmp
+   SV=STR
+   HPENGN=gravity
+
+elif [ "$SAT" = "GFZ" ];then
+   LOCALDSK=tmp
+   SV=GFZ
+   HPENGN=gravity
+
+elif [ "$SAT" = "AJISI" ];then
+   LOCALDSK=tmp
+   SV=AJI
+   HPENGN=gravity
+
+elif [ "$SAT" = "ERS1" ];then
+   LOCALDSK=tmp
+   SV=ERS
+   HPENGN=gravity
+
+elif [ "$SAT" = "TP" ];then
+   LOCALDSK=tmp
+   SV=TOP
+   HPENGN=gravity
+
+elif [ "$SAT" = "ETA1" ];then
+   LOCALDSK=tmp
+   SV=E1
+   HPENGN=gravity
+
+elif [ "$SAT" = "ETA2" ];then
+   LOCALDSK=tmp
+   SV=E2
+   HPENGN=gravity
+elif [ "$SAT" = "MLTSAT" ];then
+   LOCALDSK=tmp
+   SV=MLTSAT
+   HPENGN=gravity
+
+   fi
+
+
+mkdir /$LOCALDSK/gdyn$$
+chmod -R 777 /$LOCALDSK/gdyn$$
+cd /$LOCALDSK/gdyn$$
+
+#DATA=${SV}_${YR}.tdf.Z
+#DATA=${SV}_${YR}.tdf.Z
+DATA=ecp_MLTSAT_20.tdf.gz
+DATA=MLTSAT_${YR}.tdf.Z
+#/umbc/epavlis/data01/LOCAL/magdak/MISSIONS/MLTSAT/d_base/data/TDF/MLTSAT_20.tdf.Z
+#DATA=MLTSAT_20.tdf.gz
+#DATA=MLTSAT_20.tdf.Z 
+
+if [ "$CASE" = "PP6d" ];then
+
+   DATA=qldata.1999.020306.GISL1_99.tdf.Z
+   DATA=qldata.991010-991106.lageos1_sp_99.tdf.Z
+   DATA=DEP.tdf.Z
+
+elif [ "$CASE" = "PP6e" ];then
+
+   DATA=qldata.1999.020306.GISL1_99.tdf.Z
+   DATA=qldata.991010-991106.lageos1_sp_99.tdf.Z
+   DATA=DEP.tdf.Z
+
+elif [ "$CASE" = "PP6o" ];then
+
+   DATA=qldata.1999.020306.GISL1_99.tdf.Z
+   DATA=qldata.991010-991106.lageos1_sp_99.tdf.Z
+   DATA=DEP.tdf.Z
+
+elif [ "$CASE" = "PP6A" -o "$CASE" = "PP6Ae" ];then
+
+   DATA=${SV}_${YR}_PP6A.tdf.Z
+
+elif [ "$CASE" = "PP6B" -o "$CASE" = "PP6Be" ];then
+
+   DATA=L2tst2001_01.tdf.Z
+   DATA=${SV}_${YR}.tdf.Z
+
+fi
+
+CASE=$TCASE
+
+export SV YR CASE DATA LOCALDSK HPENGN  SUBSOL SITEFILE
+
+echo " SV YR CASE STAGE DATA         LOCALDSK HPENGN " 
+echo " $SV $YR $CASE $STAGE $DATA $LOCALDSK $HPENGN "
+
+nohup time sh $SCRIPTS/$PROG $ARC $LABEL $SAT $DATA $$ 
+
+#
+echo "  #  "
+echo "  #    End of 'RUN_GDN_SLR_IERS2010_RESXTND_2020'    "
+echo "  #  "
+

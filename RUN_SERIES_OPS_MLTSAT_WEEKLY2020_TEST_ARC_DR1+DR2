@@ -1,0 +1,525 @@
+#!/bin/ksh
+#
+
+set -xv
+
+#  RUN_STR
+
+#
+
+SCR_NAME=RUN_SERIES_OPS_MLTSAT_WEEKLY2020
+SCR_PARM=2
+SCR_LIST="CASE ETA_IN"
+SCR_VERS=200204.0
+
+SCR_DBG="#"
+export SCR_DBG
+
+
+Date=`date +%y%m%d`
+
+DateTime=`date '+DATE: %m/%d/%y  TIME: %H:%M:%S'`
+
+echo " # "
+echo " #  $SCR_NAME $* "
+echo " # "
+echo " #  Version $SCR_VERS "
+echo " # "
+echo " #  Run Date $DateTime "
+echo " # "
+
+
+CASE=WEEKLY
+
+if [ "$CASE" = "WEEKLY" ]; then
+
+  ARC_LEN=8
+  ARC_LEN=7
+  DELTA=7
+  ACCEL_NUM_S=2
+  ACCEL_NUM_A=1
+  LVER=wMZZ
+  TYPE_DR=DRWC
+  TYPE_EMT=EMTWC
+  WEIGHT=100
+  WEIGHT=
+  SNX_VER=1
+
+#200213 GRAVITY_MDL=GGM02C.90x90
+#200213 GRAVITY_MDL=GGM05S_30x30
+#200213 GRAVITY_MDL=GGM05S_120x120 
+#200213 GRVTIM=GRVTIM110310
+#200213 base on v230
+
+ GRAVITY_MDL=GGM05C-GRAVTOP_120x120_adj30x30
+ GRAV_TOP=GRAVTOP_CSR_2019.11.01+JGF_2019.11.03-2021.12.30_d      # 190104
+ GRVTIM=JCET_CSR20181211_GSM+GAC.7d/JCET_60x60
+ GRVTIM=JCET_CSR20181211_GSM+GAC.7d/JCET_6x6
+
+  export GRAVITY_MDL GRVTIM GRAV_TOP
+
+  ETIDE_MDL=NULL
+  ETIDE_MDL=etides
+  ETIDE_MDL=etides+poletide
+  #200213 base on v230
+  ETIDE_MDL=TIDES+etides_RAY_2018
+
+
+  OTIDE_MDL=otide_csr4/otide_csr4
+  OTIDE_MDL=otide_fes2002/otide_fes2002
+  OTIDE_MDL=tides.ray00_wAIR
+  OTIDE_MDL=otide_got00/otide_got00
+  OTIDE_MDL=otide_got00/40otide_got00
+  OTIDE_MDL=otide_got00/30otide_got00
+  OTIDE_MDL=otide_got00/20otide_got00
+  OTIDE_MDL=GOT47/20otides_got4.7+airTide_RayPonte03
+  OTIDE_MDL=GOT47/60otides_got4.7
+  OTIDE_MDL=GOT47/60otides_got4.7+airTide_RayPonte03
+#200213 base on v230
+  OTIDE_MDL=GOT4.10/60otides_got4p10c+Air_Tides_got4.7.d
+
+   HFCOM_MDL=HFCOM/HFCOM_GOT4.10c
+   HFEOP_MDL=HFEOP/HFEOP_DESAIwLib
+
+ 
+  export ETIDE_MDL OTIDE_MDL HFCOM_MDL HFEOP_MDL
+
+  CURRENT_APLO=050210
+
+  export CURRENT_APLO
+
+  IERS_CPP_CENTER=JCT
+  IERS_CPP_TECHNQ=L
+  IERS_CPP_LENGTH=7
+  OUR_VERSION=05
+
+  export IERS_CPP_CENTER IERS_CPP_TECHNQ IERS_CPP_LENGTH OUR_VERSION
+elif [ "$CASE" = "DAILY" ]; then
+
+  ARC_LEN=8
+  ARC_LEN=7
+  DELTA=1
+  ACCEL_NUM_S=2
+  ACCEL_NUM_A=1
+  LVER=wc
+  TYPE_DR=DRWC
+  TYPE_EMT=EMTWC
+  WEIGHT=100
+  WEIGHT=
+  SNX_VER=1
+
+#  GRAVITY_MDL=GGM02S.30x30
+GRAVITY_MDL=GGM02C.90x90
+  export GRAVITY_MDL
+
+
+  ETIDE_MDL=NULL
+  ETIDE_MDL=etides.fxd
+
+  OTIDE_MDL=otide_csr4/otide_csr4.fxd
+  OTIDE_MDL=otide_fes2002/otide_fes2002.fxd
+  OTIDE_MDL=tides.ray00_wAIR.fxd
+  OTIDE_MDL=otide_got00/otide_got00.fxd
+  OTIDE_MDL=otide_got00/40otide_got00.fxd
+  OTIDE_MDL=otide_got00/30otide_got00.fxd
+  OTIDE_MDL=otide_got00/20otide_got00.fxd
+  
+  export ETIDE_MDL OTIDE_MDL
+
+  CURRENT_APLO=050210
+
+  export CURRENT_APLO
+
+  IERS_CPP_CENTER=JCT
+  IERS_CPP_TECHNQ=L
+  IERS_CPP_LENGTH=7
+  OUR_VERSION=05
+
+  export IERS_CPP_CENTER IERS_CPP_TECHNQ IERS_CPP_LENGTH OUR_VERSION
+
+elif [ "$CASE" = "MONTHLY" ]; then
+
+  ARC_LEN=28
+  DELTA=28
+  ACCEL_NUM_S=7
+  ACCEL_NUM_A=4
+  LVER=m
+  TYPE_DR=DRM
+  TYPE_EMT=EMTM
+
+  ETIDE_MDL=NULL
+  ETIDE_MDL=etides.fxd
+
+  OTIDE_MDL=otide_csr4/otide_csr4.fxd
+  OTIDE_MDL=otide_fes2002/otide_fes2002.fxd
+  OTIDE_MDL=tides.ray00_wAIR.fxd
+  OTIDE_MDL=otide_got00/otide_got00.fxd
+  OTIDE_MDL=otide_got00/20otide_got00.fxd
+  OTIDE_MDL=otide_got00/30otide_got00.fxd
+  OTIDE_MDL=otide_got00/40otide_got00.fxd
+  
+  export ETIDE_MDL OTIDE_MDL
+
+  CURRENT_APLO=050210
+
+  export CURRENT_APLO
+
+fi
+
+ITRF_APRIORI=SLRF2014
+export ITRF_APRIORI
+
+
+TDF2GDYN=tdf0901p0_i64_sun_RM=8.x
+
+export TDF2GDYN
+
+
+GDN_2S=gs1507p1_i64.x   ##new 2016-03-22
+
+GDN_2S=PE2_EXECi64/gs1810p2_i64_PE2.x
+
+
+GDN_2E=ge1507p6_i64.x #new 2016-03-22
+
+GDN_2E=PE2_EXECi64/ge1810p09_i64_PE2.x
+
+export GDN_2S GDN_2E
+
+#exec > /tmp/magdak/RUN_SERIES_OPS_MLTSAT_WEEKLY2020.${CASE}.$ARC.$Date.ecp1.log 2>&1
+
+mkdir -p /tmp/magdak
+#chmod -R 775 /tmp/magdak
+cd /tmp/magdak
+mkdir ${CASE}$$
+TMPP=/tmp/magdak/${CASE}$$
+cd ${CASE}$$
+export TMPP
+MAIN_PATH=/umbc/epavlis/data01/LOCAL/magdak
+SCRIPTS=/umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT
+DISK=umbc/epavlis/data01/LOCAL/magdak/MISSIONS
+
+SERVICE=ILRS
+ILRS_AC=jcet
+
+
+ITR=0
+VER=${LVER}
+#GTR=3
+GTR=2
+PROJ=.
+SUBSOL=.
+DELETE=OUT
+INSERT=NONE
+
+
+export CASE ARC_LEN ACCEL_NUM_S ACCEL_NUM_A DELTA MAIN_PATH SCRIPTS SNX_VER ETA_IN
+
+export ITR LVER VER GTR PROJ SUBSOL DELETE INSERT SERVICE DISK WEIGHT ILRS_AC
+
+
+EPOCH_DIR=$MAIN_PATH/INFILES/INF_OPS_MLTSAT/EPOCH_BLK_${SERVICE}/${CASE}
+MBIAS_DIR=$MAIN_PATH/INFILES/INF_OPS_MLTSAT/MBIAS_BLK_${SERVICE}/${CASE}
+
+export EPOCH_DIR MBIAS_DIR
+
+
+
+
+
+#--------------------------------------
+#  Start the process
+#--------------------------------------
+
+
+#  Set the arc name, the start/stop times, and the ACCELs end-times:
+
+$SCRIPTS/ARC_SETUP $DELTA $MAIN_PATH $CASE > o.ARC_SETUP 2>&1 
+
+
+#
+#  Read year, doy, date and arc-name for the old, current and future arcs:
+#
+
+read OYEAR ODOY Date_OLD_ARC OLD < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_OLD.$CASE
+read NYEAR NDOY Date_NEW_ARC ARC < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.$CASE
+read XYEAR XDOY Date_NXT_ARC NXT < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.$CASE
+read EYEAR EDOY Date_END_ARC END < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_END.$CASE
+
+read Date_MID_ARC < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/MID-ARC_INFO.$CASE
+read SNX_DATE < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/SINEX_DATE_INFO.$CASE
+
+export NDOY
+#
+# Set the version of a LAGEOS-only IERS SINEX = OUR_VERSION as default
+# in the case we have ETALON data added, this will be modified after
+# processing the ETALON data to OUR_VERSION + 10
+#
+
+  L12_VERSION=${OUR_VERSION}
+
+export SNX_DATE L12_VERSION
+
+#
+#--------------------------------------
+#  Generate the Atmospheric Loading File:
+#--------------------------------------
+#
+
+###$SCRIPTS/MAKE_APLO $NDOY $NYEAR $XDOY $XYEAR $ARC > o.MAKE_APLO 2>&1
+
+
+#
+#--------------------------------------
+#  Get the SLR QL data from CDDIS or EDC:
+#--------------------------------------
+#
+
+YY=`echo $NYEAR | cut -c3-4`
+#
+##  For analyzing past arcs, do not need to re-get the QL data! But we will need this for the operational script!!!
+#
+
+#$SCRIPTS/4SAT_QL_2_TDF_ARC $NYEAR $YY ${OYEAR}${Date_OLD_ARC} ${NYEAR}${Date_NEW_ARC} > o.4SAT_QL_2_TDF_ARC 2>&1
+
+#
+#------------------------------------------------
+#  Set the name of the Global Solution to be used:
+#------------------------------------------------
+#
+
+GLOBAL_CMAT=${SERVICE}_03
+#GLOBAL_CMAT=${SERVICE}_${YY}
+
+export GLOBAL_CMAT
+
+#
+#------------------------------------------------
+#  Propagate the Sites' file to the Mid-Arc Epoch:
+#------------------------------------------------
+#
+
+## First figure out where you are wrt Arequipa quake:
+#
+#  arc_mmdd=`echo ${Date_NEW_ARC}|cut -c3-6`
+#  arc_date=$NYEAR$arc_mmdd
+#
+#  if [ "$arc_date" -lt "20010624" ];then
+#
+##  pre-Arequipa quake positions:
+#
+#    ITRF_2_PROPAGATE=ITRF2000@970101
+#
+#  elif [ "$arc_date" -ge "20010624" ];then
+#
+##  post-Arequipa quake positions:
+#
+#    ITRF_2_PROPAGATE=ITRF2000@970101q
+#
+#  fi
+
+    ITRF_2_PROPAGATE=$ARC
+  export ITRF_2_PROPAGATE
+
+
+
+#$SCRIPTS/PROPAGATE_SITES08 $CASE $ARC > o.PROPAGATE_SITES.$CASE.$ARC.$SVN 2>&1
+
+#
+#----------------------------------------------
+#  Now generate the arc-setups for the new arcs:
+#----------------------------------------------
+#
+#
+#  For each S/C go through the following steps:
+#
+# a) turn last arc (from EMT punch, i.e. EMT2DR) and save ELEMS records
+#
+# b) using above ELEMS and template, make new arc
+#
+# c) run the new arc (DR)
+#
+# d) turn the punch and re-run (DR) the arc
+#
+# e) turn the punch for EMAT and cut two EMATs, one for operational
+#    and one for the re-analysis series
+#
+# f) Update the Solution Number for this week
+#
+#----------------------------------------------
+#
+
+read SOL_NUM_OLD < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.${CASE}
+
+  SOL_NUM=`expr $SOL_NUM_OLD + 1`
+
+##
+## Make sure that SOL_NUM comprises 3 digits ONLY and EXACTLY 3 !      
+##
+
+printf "%3.3s\n" $SOL_NUM > ttt
+sed "s/ /0/g" ttt > $MAIN_PATH/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.${CASE}
+
+read SOL_NUM < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.${CASE}
+
+echo $SOL_NUM
+
+PSOL_NUM=${SOL_NUM}
+
+#     if [ $SOL_NUM -lt 10 ]; then
+#        PSOL_NUM=00$SOL_NUM
+
+#     elif [ $SOL_NUM -lt 100 -a $SOL_NUM -ge 10 ]; then
+#        PSOL_NUM=0$SOL_NUM
+#     fi
+
+#SOL_NUM=$PSOL_NUM
+
+
+
+#
+# Now generate the solution names for all versions of products:
+#
+
+SOL_L=L12__OPS${YY}${PSOL_NUM}
+SOL_E=LE12_OPS${YY}${PSOL_NUM}
+
+export ARC Date_NEW_ARC SOL_NUM PSOL_NUM
+
+#
+#  We MUST change the NXT to NEW below, but when we start all over
+#
+
+SOL_LPP=L12__OPS${Date_END_ARC}
+SOL_EPP=LE12_OPS${Date_END_ARC}
+
+export Date_EDN_ARC SOL_LPP SOL_EPP
+
+SOL_LN=L12_NEOS${Date_END_ARC}
+SOL_EN=LE12NEOS${Date_END_ARC}
+
+export SOL_LN SOL_EN
+
+SUBDIR=OPS
+export SUBDIR
+
+
+
+#---------------------------------------------------
+
+
+#  Process STARLETTE
+
+
+#---------------------------------------------------
+
+
+
+#  STARLETTE:
+
+SVN=MLTSAT
+SAT=MLTSAT
+
+$SCRIPTS/GET_ELEMS_ALL_MLTSAT 2_turn_4_run_series.$CASE $SVN $ITR $VER $GTR $CASE $PROJ $SUBSOL $DELETE $INSERT > o.GET_ELEMS_ALL.$CASE.$SVN 2>&1
+ 
+
+#exit 20200228
+
+$SCRIPTS/MAKE_NEW_ARC $SAT $CASE $NYEAR $ARC > o.MAKE_NEW_ARC.$CASE.$SVN 2>&1 
+
+#exit 20200228
+#exit 0
+export PROC_STEP=MLTSAT_DR0
+
+$SCRIPTS/RUN_GDN_SLR_IERS2010_RESXTND_2020 $ARC ${LVER}0 $SAT $YY $TYPE_DR . > o.RUN_GDN_SLR_DR_0.$CASE.$SVN 2>&1
+#exit 0
+
+
+#$SCRIPTS/RMS_OF_FIT_SLR_ALL $ARC.${LVER}0 $SVN $CASE DR > o.RMS_OF_FIT_SLR_ALL0.$CASE.$SVN 2>&1
+
+$SCRIPTS/TURN_SLR_ALL CURRENT_ARC_DR.$CASE $SVN 0 ${LVER}0 $GTR $CASE DR . . $DELETE $INSERT > o.TURN_SLR_ALL_DR0.$CASE.$SVN 2>&1
+
+#exit 0
+export PROC_STEP=MLTSAT_DR1
+
+$SCRIPTS/RUN_GDN_SLR_IERS2010_RESXTND_2020 $ARC ${LVER}1 $SAT $YY $TYPE_DR . > o.RUN_GDN_SLR_DR_1.$CASE.$SVN 2>&1
+
+$SCRIPTS/RMS_OF_FIT_SLR_ALL $ARC.${LVERE}1 $SVN $CASE DR > o.RMS_OF_FIT_SLR_ALL_DR1.$SVN 2>&1
+
+mailx -s "RMS LARES $ARC" magdak@umbc.edu < $MAIN_PATH/OUTFILES/RMS_Nobs_Elcut.$Date.$SAT
+
+
+$SCRIPTS/SHIFT_FILES_FORWARD $CASE $MAIN_PATH
+
+
+
+exit 0
+$SCRIPTS/RMS_OF_FIT_SLR_ALL $ARC.${LVER}1 $SVN $CASE DR > o.RMS_OF_FIT_SLR_ALL1.$SVN 2>&1
+
+
+#EMT
+$SCRIPTS/TURN_SLR_ALL CURRENT_ARC_EMT.$CASE $SVN 1 ${LVER}1 $GTR $CASE EMT . . IN $INSERT > o.TURN_SLR_ALL_EMTe.$CASE.$SVN 2>&1
+#
+export PROC_STEP=MLTSAT_EMTe
+#
+$SCRIPTS/RUN_GDN_SLR_IERS2010_RESXTND_2020 $ARC ${LVER}e $SAT $YY $TYPE_EMT . > o.RUN_GDN_SLR_EMT_e.$CASE.$SVN 2>&1
+#
+#
+export PROC_STEP=MLTSAT_EMTxR_EMTx
+#
+$SCRIPTS/RUN_GDN_SLR_IERS2010_RESXTND_2020 $ARC ${LVER}x $SAT $YY EMTW_mid . > o.RUN_GDN_SLR_EMT_x.$CASE.$SVN 2>&1
+#
+$SCRIPTS/RMS_OF_FIT_SLR_ALL $ARC.${LVER}e $SVN $CASE EMT > o.RMS_OF_FIT_SLR_ALLe.$CASE.$SVN 2>&1
+
+
+
+######$SCRIPTS/REPORT_BIAS ${ARC} $SAT ${LVER}  $YY $TYPE_DR $SVN > o.REPORT_BIAS_${SAT} 2>&1
+cd $TMPP
+######$SCRIPTS/MAKE_DEL_BIG_BIAS ${ARC} $SAT ${LVER} > o.MAKE_DEL_BIG_BIAS 2>&1
+
+
+
+######$SCRIPTS/REPORT_BIAS ${ARC} $SAT ${LVER}  $YY $TYPE_DR $SVN > o.REPORT_BIAS_${SAT} 2>&1
+cd $TMPP
+######$SCRIPTS/MAKE_DEL_BIG_BIAS ${ARC} $SAT ${LVER} > o.MAKE_DEL_BIG_BIAS 2>&1
+
+#REPORT FOR ALL SAT
+#$SCRIPTS/REPORT_BIAS_ALL  ${ARC} >  o.REPORT_BIAS_ALL 2 >&1
+#$SCRIPTS/REPORT_BIAS_ALL_ONE_DAY  ${ARC} >  o.REPORT_BIAS_ALL_ONE_DAY 2 >&1
+#$SCRIPTS/RUN_SERIES_DAILY_BIAS $YY $ARC  > o.RUN_BIAS.$ARC 2>&1
+#$SCRIPTS/REPORT_BIAS_ALL_ONE_DAY  ${ARC} >  o.REPORT_BIAS_ALL_ONE_DAY 2 >&1
+############################################
+#
+#NEW 2011-04-14 - report with residual plots
+#
+############################################
+
+#$SCRIPTS/resi_plot4_weekly_STELLA $Date_NEW_ARC > o.resi_plot4_weekly
+#$SCRIPTS/polar_resi_multi8_weekly_STELLA $Date_NEW_ARC > o.polar_resi_multi8_4weekly
+#$SCRIPTS/REPORT_BIAS_PUNCHOUT $ARC > o.REPORT_BIAS_PUNCHOUT 2>&1
+#
+#
+#cd $TMPP/DAILY/${Date_NEW_ARC}
+#
+#printf "gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=D_REPORT_${Date_NEW_ARC}_AS.pdf -f BIAS_TAB.pdf ${Date_NEW_ARC}_weekly_sate_stats.pdf  ${Date_NEW_ARC}_weekly_admtd_residuals.pdf   ${Date_NEW_ARC}_weekly_edtd_residuals.pdf   ${Date_NEW_ARC}_WEEKLY_sate_trks1.pdf   ${Date_NEW_ARC}_WEEKLY_sate_trks2.pdf   ${Date_NEW_ARC}_WEEKLY_sate_trks1_A.pdf   ${Date_NEW_ARC}_WEEKLY_sate_trks2_A.pdf ${Date_NEW_ARC}_WEEKLY_sate_trks1_S.pdf   ${Date_NEW_ARC}_WEEKLY_sate_trks2_S.pdf" > PDF_EXE
+#
+#chmod 775  PDF_EXE
+#./PDF_EXE
+#cp D_REPORT_${Date_NEW_ARC}_AS.pdf  /${DISK}/PPV/summaries/${CASE}
+#echo | mutt  -s D_REPORT_${Date_NEW_ARC}_AS -a  D_REPORT_${Date_NEW_ARC}_AS.pdf magdak@umbc.edu
+
+
+#$SCRIPTS/SHIFT_FILES_FORWARD $CASE $MAIN_PATH
+
+#$SCRIPTS/CLEANUP
+print "THE END RUN WEEKLY MLTSAT" > END_txt
+mail -s "WEEKLy END MLTSAT" magdak@umbc.edu < END_txt
+
+cd ..
+#rm -r  ${CASE}$$  
+#if [ "{$ARC}" = "z80113"  ]; then
+#   exit 101
+#fi
+#$SCRIPTS/RUN_SERIES_OPS_AS_WEEKLY2005 > /tmp/magda/o.RUN_SERIES_OPS_AS_WEEKLY 2>& 1 
+exit 0
+

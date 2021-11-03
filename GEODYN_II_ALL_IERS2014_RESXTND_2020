@@ -1,0 +1,872 @@
+#!/bin/ksh
+#
+${SCR_DBG}set -xv
+set -xv
+
+#  GEODYN_II_ALL_IERS2014_RESXTND_2020
+#
+# Imports are: CASEDIR CASE STAGE SV YR DATA LOCALDSK 
+#
+
+#if [ `expr $#` -lt 5 ]; then
+#   echo "Usage: GEODYN_II_ALL_IERS2014_RESXTND_2020 ARC LABEL SAT DATA tdir\007"
+#   exit 101
+#fi
+
+#echo " # "
+#echo " #  GEODYN_II_ALL_IERS2014_RESXTND_2020 $* "
+#echo " # "
+
+# date '+DATE: %m/%d/%y%nTIME: %H:%M:%S'
+
+SCR_NAME=GEODYN_II_ALL_IERS2014_RESXTND_2020
+SCR_PARM=5
+SCR_LIST="ARC LABEL SAT DATA tdir"
+SCR_VERS=200214.0
+
+
+if [ `expr $#` -lt $SCR_PARM ]; then
+   echo "Usage: $SCR_NAME ${SCR_LIST}\007"
+   exit 101
+fi
+
+DateTime=`date '+DATE: %m/%d/%y  TIME: %H:%M:%S'`
+
+echo " # "
+echo " #  $SCR_NAME $* "
+echo " # "
+echo " #  Version $SCR_VERS "
+echo " # "
+echo " #  Run Date $DateTime "
+echo " # "
+
+
+
+ARC=$1
+LABEL=$2
+SAT=$3
+DATA=$4
+tdir=$5
+
+TMP=$LOCALDSK
+
+# Defaults :
+
+  disk=$DISK
+# diskC=space/MISSIONS
+# usr=$USER
+
+
+gdir=/${TMP}/gdyn$tdir
+cd $gdir
+
+####################################################
+#              Global Setup                        #
+####################################################
+#
+#
+# General cards
+#
+cat /${disk}/$SAT/d_base/comn/${SV}glb${CASE}.gen.2020.IERS10_90x90 > ftn05
+#cat /${disk}/$SAT/d_base/comn/${SV}glb${CASE}.gen.2011.IERS10 > ftn05
+#cat /${disk}/$SAT/d_base/comn/${SV}glb${CASE}.gen.IERS03      > ftn05
+
+#
+# FLUX @ 1 A.U. card
+#
+grep "D${Date_NEW_ARC}" $MAIN_PATH/INFILES/FLUX_X-ext_com_42_65_1702_SI_7d.170310    >> ftn05
+#grep "D${Date_NEW_ARC}" $MAIN_PATH/INFILES/FLUX_cmp_d25_07_0310_110512_RUNNING_MEAN  >> ftn05
+
+#
+# POLDYN card
+#
+grep "D${Date_NEW_ARC}" $MAIN_PATH/INFILES/POLDYN_RECS_1975-2020_60x60  >> ftn05
+
+#
+# Lense-Thirring card
+#
+#cat /${disk}/${usr}/$SAT/d_base/comn/LNSTHR.0.${SV} >> ftn05
+#cat /${disk}/${usr}/$SAT/d_base/comn/LNSTHR.1.${SV} >> ftn05
+#cat /${disk}/${usr}/$SAT/d_base/comn/LNSTHR.-1.${SV} >> ftn05
+ 
+#if [ "${CASE}" = "EMT" ]; then
+ cat /${disk}/$SAT/d_base/comn/LNSTHR.1.${SV} >> ftn05
+#fi
+
+#
+# poleut cards
+#
+
+#if [ "${CASE}" = "DR" ]; then
+
+#  if [ "$SAT" = "GISL1" -o "$SAT" = "GISL2" ];then
+
+#    zcat /${disk}/$SAT/d_base/padj/${STAGE}/${ARC}.Z    >> ftn05
+
+#  fi
+
+#elif [ "${CASE}" = "EMT" ]; then
+
+if [ "${tASE}" = "EMT" ]; then
+
+zcat /${disk}/$SAT/d_base/padj/${STAGE}/${ARC}.Z    >> ftn05
+
+fi
+
+#
+# earth model 
+#
+if [ "${CASE}" = "DR" ]; then
+
+# C(2,0), C(2,1) & S(2,1) in mid-arc epoch:                                                  
+                                                                                            
+ zgrep "G${Date_NEW_ARC}" /${disk}/d_base/grav/${GRAV_TOP}.fxd.gz          >> ftn05
+
+# the rest of the model from (2,2) to Max.:
+
+ zcat /${disk}/d_base/grav/${GRAVITY_MDL}.fxd.gz         >> ftn05
+
+# TVG cards:
+
+#zcat /${disk}/d_base/grav/${GRVTIM}.${SV}.fxd.gz         >> ftn05
+ zcat /${disk}/d_base/grav/GRVTIM/${GRVTIM}/G${Date_NEW_ARC}.fxd.gz         >> ftn05
+
+
+
+
+elif [ "${CASE}" = "EMT" ]; then
+
+  # C(2,0), C(2,1) & S(2,1) in mid-arc epoch:
+                                                                                                
+ #zgrep "G${Date_NEW_ARC}" /${disk}/d_base/grav/${GRAV_TOP}.adj.Z          >> ftn05           
+  zgrep "G${Date_NEW_ARC}" /${disk}/d_base/grav/${GRAV_TOP}.adj.gz          >> ftn05         
+
+ # the rest of the model from (2,2) to Max.:
+
+ zcat /${disk}/d_base/grav/${GRAVITY_MDL}.adj.Z             >> ftn05   # Use for standard analyses
+
+# TVG cards:
+
+#zcat /${disk}/d_base/grav/${GRVTIM}.${SV}.adj.Z         >> ftn05
+ zcat /${disk}/d_base/grav/GRVTIM/${GRVTIM}/G${Date_NEW_ARC}.adj.gz         >> ftn05
+
+
+fi
+
+#
+# tide cards
+#
+
+#   ETIDE_MDL=TIDES+etides_RAY_2018
+#   OTIDE_MDL=GOT4.10/60otides_got4p10c+Air_Tides_got4.7
+
+if [ "${CASE}" = "DR" ]; then
+
+zcat /${disk}/d_base/tide/ETIDES/${ETIDE_MDL}.fxd.gz     >> ftn05
+zcat /${disk}/d_base/tide/OTIDES/${OTIDE_MDL}.fxd.gz     >> ftn05
+
+#cat /${disk}/d_base/tide/OTIDES/${OTIDE_MDL}  >> ftn05
+
+
+elif [ "${CASE}" = "EMT" ]; then
+
+zcat /${disk}/d_base/tide/ETIDES/${ETIDE_MDL}.adj.gz     >> ftn05
+zcat /${disk}/d_base/tide/OTIDES/${OTIDE_MDL}.adj.gz     >> ftn05
+
+fi
+
+#
+# tidal diurnal & semidiurnal COM and EOP cards
+#
+
+#   HFCOM_MDL=HFCOM/HFCOM_GOT4.10c
+#   HFEOP_MDL=HFEOP/HFEOP_DESAIwLib
+#
+#
+if [ "${CASE}" = "DR" ]; then
+
+zcat /${disk}/d_base/comn/${HFCOM_MDL}.fxd.gz >> ftn05   
+zcat /${disk}/d_base/comn/${HFEOP_MDL}.fxd.gz >> ftn05
+
+fi
+
+if [ "${CASE}" = "EMT" ]; then
+
+zcat /${disk}/d_base/comn/${HFCOM_MDL}.adj.gz >> ftn05   
+zcat /${disk}/d_base/comn/${HFEOP_MDL}.adj.gz >> ftn05
+
+fi
+
+#
+#
+# oload cards
+#
+
+#   OLOAD_MDL=SLR_OLOAD_180118_207NSTA_GOT4.10c.gdyn
+
+#
+
+#zcat /${disk}/d_base/comn/SLR_OLOAD_080520_got4.7.gdyn.Z  >> ftn05
+
+ zcat /${disk}/d_base/comn/SLR_OLOAD_180118_207NSTA_GOT4.10c.gdyn.Z  >> ftn05
+
+#
+
+# reference frame cards
+#
+
+if [ "$YR" -gt "50" -a "$YR" -le "99" ];then
+
+ arc_yy=`expr $YR + 1900`
+
+elif [ "$YR" -ge "00" -a "$YR" -le "50" ];then
+
+ arc_yy=`expr $YR + 2000`
+
+fi
+
+arc_mmdd=`echo ${ARC}|cut -c3-6`
+
+arc_date=$arc_yy$arc_mmdd
+
+if [ "${CASE}" = "DR" ]; then
+
+  suffix=fxd
+
+elif [ "${CASE}" = "EMT" ]; then
+
+  suffix=adj
+
+fi
+
+if [ "${STAGE}" = "WEEKLY" -o "${STAGE}" = "FORTNTLY" -o "${STAGE}" = "MONTHLY" -o "${STAGE}" = "QUARTERLY" -o "${STAGE}" = "DAILY" ]; then
+#if [ "${STAGE}" = "WEEKLY" -o "${STAGE}" = "FORTNTLY" -o "${STAGE}" = "MONTHLY" -o "${STAGE}" = "QUARTERLY" ]; then
+#if [ "${STAGE}" = "WEEKLY" ]; then
+
+  if [ "$SITEFILE" = "NONE" ]; then
+
+#  if [ "$arc_date" -lt "20010624" ];then
+#
+##  pre-Arequipa quake positions:
+#
+#    zcat /${disk}/d_base/site/ITRF2000@970101.${suffix}.Z   >> ftn05
+#
+#  elif [ "$arc_date" -ge "20010624" ];then
+#
+##  post-Arequipa quake positions:
+#
+#    zcat /${disk}/d_base/site/ITRF2000@970101q.${suffix}.Z   >> ftn05
+#
+#  fi
+
+  cat /${disk}/d_base/site/${STAGE}/STAPOS.${suffix}     >> ftn05
+
+   if [ "$suffix" = "fxd" ];then
+
+##/usr/local/bin/zgrep -v -e SIGVEL /${disk}/d_base/site/SLRF2008/WEEKLY/${ARC}.adj.Z   > tftn05
+#     /usr/local/bin/zgrep -v -e SIGVEL /${disk}/d_base/site/SLRF2008_FINAL/DAILY/${ARC}.adj.Z   > tftn05
+#  zgrep -v -e SIGVEL /${disk}/d_base/site/$ITRF_APRIORI/DAILY/${ARC}.adj.Z   > tftn05
+  zgrep -v -e SIGVEL  /umbc/epavlis/data01/LOCAL/magdak/MISSIONS/d_base/site/DAILY/SLRF2014/EPOCH_2010.0/${ARC}.adj.Z  > tftn05
+
+  zgrep -v -e CONSTADJ tftn05   > cftn05
+  zgrep -v -e CONSTEND cftn05   >> ftn05
+    
+   elif [ "$suffix" = "adj" ];then
+
+#    zcat /${disk}/d_base/site/$ITRF_APRIORI/${STAGE}/${ARC}.adj.Z   >> ftn05
+
+    ITRF_APRIORI=SLRF2014_20161205_PSD
+
+zcat /umbc/epavlis/data01/LOCAL/magdak/MISSIONS/d_base/site/DAILY/SLRF2014/EPOCH_2010.0/${ARC}.adj.Z >> ftn05
+
+##zcat /${disk}/d_base/site/SLRF2008/WEEKLY/${ARC}.adj.Z   >> ftn05
+#    zcat /${disk}/d_base/site/SLRF2008_FINAL/DAILY/${ARC}.adj.Z   >> ftn05
+#   zcat /${disk}/d_base/site/$ITRF_APRIORI/DAILY/${ARC}.adj.Z   >> ftn05
+
+   fi
+
+   cat /${disk}/d_base/site/${STAGE}/STAPOS.end     >> ftn05
+
+ else
+
+#  this is the case of stations referenced to mid-arc epoch:
+
+     cat /${disk}/d_base/site/${STAGE}/STAPOS.adj     >> ftn05
+#/usr/local/bin/zgrep -v -e SIGVEL /${disk}/d_base/site/$ITRF_APRIORI/DAILY/${ARC}.adj.Z   >> ftn05
+#      /usr/local/bin/zgrep -v -e SIGVEL /${disk}/d_base/site/DAILY/${ARC}.adj.Z   >> ftn05
+
+zgrep -v -e SIGVEL /umbc/epavlis/data01/LOCAL/magdak/MISSIONS/d_base/site/DAILY/SLRF2014/MID-ARC_EPOCH/${ARC}.adj.Z   >> ftn05
+
+
+#   zcat /${disk}/d_base/site/${STAGE}/${ARC}.adj.Z   >> ftn05
+     cat /${disk}/d_base/site/${STAGE}/STAPOS.end     >> ftn05
+
+#   zcat /${disk}/d_base/site/WEEKLY/TEMP/${ARC}.adj.Z   >> ftn05
+  
+  fi
+
+elif [ "${STAGE}" = "MONTHLY/PP6" ]; then
+  
+  if [ "${CASE}" = "DR" ]; then
+
+  zcat /${disk}/$SAT/d_base/site/MONTHLY/PP6/${ARC}.fxd.Z   >> ftn05
+  
+  elif [ "${CASE}" = "EMT" ]; then
+  
+  zcat /${disk}/$SAT/d_base/site/MONTHLY/PP6/${ARC}.adj.Z   >> ftn05
+  
+  fi
+
+elif [ "${STAGE}" = "ORBIT/PP6" ]; then
+
+#   PP6 positions:
+
+ zcat /${disk}/$SAT/d_base/site/ORBIT/PP6/${ARC}.Z   >> ftn05
+
+fi
+
+#
+# endglbl card
+#
+
+if [ "${CASE}" = "EMT" ]; then
+
+ cat /${disk}/d_base/comn/endglb11 >> ftn05
+
+elif [ "${CASE}" = "DR" ]; then
+
+#cat /${disk}/d_base/comn/endglb11 >> ftn05 
+if [ "${LABEL}" = "wMZZ0"  ]; then
+
+cat /${disk}/d_base/comn/endglb22 >> ftn05   # Use for standard analyses
+elif  [ "${LABEL}" = "wMZZ1"  ]; then
+cat /${disk}/d_base/comn/endglb22 >> ftn05 
+fi
+#cat /${disk}/d_base/comn/endglb55 >> ftn05   # Use for standard analyses
+# cat /${disk}/d_base/comn/endglb66 >> ftn05   # Use for standard analyses
+
+fi
+
+#
+#
+
+####################################################
+#          Iterated Arc Setup                      #
+####################################################
+#
+#
+# Satellite arc setup cards
+#
+
+#cat /${disk}/$SAT/d_base/trnd/${CASE}/${STAGE}/$ITRF_APRIORI/${ARC} >> ftn05
+#cat /${disk}/$SAT/d_base/trnd/${CASE}/${STAGE}/${ARC} >> ftn05
+cat /${disk}/MLTSAT/d_base/trnd/${CASE}/${STAGE}/${ARC} >> ftn05
+
+
+if [ "${LABEL}" = "wMZ0" -o "${LABEL}" = "wMZZ0" ]; then
+sed "s/EDIT                     ......................................................./EDIT                     3.5000000000000D+00 1.00000000D+02 0.000000D+00 0.0D+00/g"  ftn05 > ftn05M
+mv ftn05M ftn05
+   elif [ "${LABEL}" = "wMZ1" ];then
+
+sed "s/EDIT                     ......................................................./EDIT                     3.5000000000000D+00 1.00000000D+02 0.000000D+00 0.0D+00/g"  ftn05 > ftn05M
+mv ftn05M ftn05
+fi
+#exit 200229
+#cat /${disk}/$SAT/d_base/trnd/${CASE}/${STAGE}/V070207/${ARC} >> ftn05
+#cat /${disk}/$SAT/d_base/trnd/${CASE}/${STAGE}/${ARC} >> ftn05
+#cat /${disk}/$SAT/d_base/trnd/${CASE}/${STAGE}/NEWSPNAX/${ARC} >> ftn05
+#cat /${disk}/$SAT/d_base/trnd/${CASE}/${STAGE}/${ARC} >> ftn05
+
+#
+#   Check for ORBFIL
+#
+
+grep ORBFIL ftn05 > ORBFIL
+
+#
+#--------------------------------------------------
+#
+#   Ancillary data sets
+#
+#--------------------------------------------------
+#
+# Get the laser tracking data
+#
+zcat /${disk}/$SAT/d_base/data/TDF/${DATA} > ftn40
+#
+# Get the Geodyn IERS Tables
+#
+#ln -s /${disk}/d_base/tabs/iers.current ftn02
+#ln -s /${disk}/d_base/tabs/iers5708.ntab0801 ftn02
+ln -s /umbc/research/epavlis/MISSIONS/d_base/tabs/iers.current ftn02
+#
+# Get the Planetary Ephemeris
+#
+#ln -s /${disk}/d_base/ephm/ephem403.data ftn01
+#ln -s /${disk}/d_base/ephm/ephem1403.data ftn01
+
+#ln -s /${disk}/d_base/ephm/ephem1403.ext.data ftn01
+#ln -s /${disk}/d_base/ephm/ephem1403.ext.data.intel_native ftn01
+#ln -s /${disk}/d_base/ephm/ephem1421.ext.data_RM=8.130725 ftn01
+#ln -s /${disk}/d_base/ephm/DE430/ephem1430.data2025.bin.i64_RM=8.210409  ftn01
+
+if [ "${NYEAR}" -lt "2000" ];then
+#### after 20130725 valid to 210407
+ln -s /${disk}/d_base/ephm/ephem1421.ext.data_RM=8.130725  ftn01
+else
+#valid after 210408
+ln -s /${disk}/d_base/ephm/DE430/ephem1430.data2025.bin.i64_RM=8.210409  ftn01
+fi
+
+
+#
+# Get a Gravity Model to satisfy ftn12 on HP
+#
+zcat /${disk}/d_base/grav/pgs7337b.Z > ftn12
+
+#
+# Get the Atmospheric Loading file
+#
+#zcat /${disk}/d_base/data/APLO_GSFC/040517/${ARC}.Z > ftn24
+
+cat /${disk}/d_base/data/APLO_GSFC/${CURRENT_APLO}/${ARC} > ftn24
+
+#
+# Get the Atmospheric Gravity file
+#
+#cat /${disk}/ATMOS/ATGRAV/MERGED/ATGRAV.TEST_50x50 > fort.18
+#cat /${disk}/ATMOS/ATGRAV/MERGED/ATGRAV.TEST_4x4 > fort.18
+#cat /${disk}/ATMOS/ATGRAV/MERGED/ATGRAV.TEST > ftn18
+#zcat /${disk}/d_base/data/ATGRAV/MERGED/${ARC}.Z > ftn24
+
+cp ftn05 $ARC.SAVEITu05
+cp ftn05 /tmp/epavlis/$ARC.SAVEITu05_${SAT}_${CASE}_${STAGE}
+#cp ftn01 FTN01
+#cp ftn02 FTN02
+#cp ftn12 FTN12
+#cp ftn40 FTN40
+
+#cp ftn05 /${disk}/$SAT/unitX/iisset.$ARC.$LABEL
+#compress -f /${disk}/$SAT/unitX/iisset.$ARC.$LABEL
+#exit 99
+
+###
+
+#######################################################################
+#                                                                     #
+#                         RUN IIS                                     #
+#                                                                     #
+#######################################################################
+echo " # "
+echo " #		Run IIS"
+echo " # "
+
+#
+#...Execute the IIs
+#
+
+ls -la /umbc/research/epavlis/EXECUTABLES/${GDN_2S}
+
+ /umbc/research/epavlis/EXECUTABLES/${GDN_2S} > iisout 2> iisout_err
+
+ls -la ftn*
+
+#exit 99
+
+#
+cat iisout_err iisout > iis
+rm iisout_err iisout
+
+grep "ABNORMAL TERMINATION" iis > err2S
+sum err2S > out.err2S
+read lerr2S b c < out.err2S
+
+if [ "$lerr2S" = "0" ]; then
+
+   \rm err2S out.err2S
+
+else
+
+   echo "  "
+
+   echo " ** 2S ** ABNORMAL TERMINATION  " > 2mail
+   echo "  "
+
+   cat out.err2S >> 2mail
+   echo "  "
+
+   echo " $SAT $ARC $LABEL " >> 2mail
+
+   echo "  "
+
+#   mail -m URGENT_from_2S -t epavlis@umbc.edu < 2mail
+
+   \rm 2mail
+
+fi
+
+\rm err2S out.err2S   
+
+
+rm ftn12
+
+mv ftn11 g2e.11
+mv ftn41 g2e.12
+
+rm ftn*
+rm EXAT*
+
+mv g2e.11 ftn11
+mv g2e.12 ftn12
+
+echo " # "
+echo " #		End of IIS"
+echo " # "
+#
+echo " #"
+echo " #		Run IIE"
+echo " #"
+     
+ls -la /umbc/research/epavlis/EXECUTABLES/${GDN_2E}             
+
+ /umbc/research/epavlis/EXECUTABLES/${GDN_2E}  > iie 2> iieerr                
+
+#/space/users/epavlis/EXECUTABLES/geodyn_2E_0407p5       > iie 2> iieerr
+#/space/users/epavlis/EXECUTABLES/geodyn_2E_0407p3       > iie 2> iieerr
+# /space/users/epavlis/EXECUTABLES/giie0511p0.x       > iie 2> iieerr
+# /space/users/epavlis/EXECUTABLES/ge0511p0.x       > iie 2> iieerr
+
+#exit 99
+
+
+
+cat iis iie iieerr > gdnout
+
+$SCRIPTS/STATUS gdnout "0NORMAL.END.OF.GEODYN.II-E.EXECUTION." $PROC_STEP > o.STATUS_gdnout 2>&1
+
+#
+mv gdnout  /${disk}/$SAT/output/${CASE}/${STAGE}/$ARC.$LABEL
+mv fort.71 /${disk}/$SAT/emat/${STAGE}/$ARC.$LABEL
+#mv fort.71 /${disk}/$SAT/emat/${CASEDIR}/$ARC.$LABEL
+mv ftn07 /${disk}/$SAT/punchdout/${CASE}/${STAGE}/$ARC.$LABEL
+mv fort.8 /${disk}/$SAT/orbtvu/car/$ARC.$LABEL
+mv fort.9 /${disk}/$SAT/summaries/${CASE}/${STAGE}/$ARC.$LABEL
+mv fort.10 /${disk}/$SAT/orbtvu/kep/$ARC.$LABEL
+mv fort.16 /${disk}/$SAT/corrections/${CASE}/${STAGE}/$ARC.$LABEL
+mv fort.20 /${disk}/$SAT/simdat/$ARC.$LABEL
+mv ftn37 /${disk}/$SAT/biaschk/$ARC.$LABEL
+mv fort.94 /${disk}/$SAT/products/arc/${STAGE}/$ARC.$LABEL
+mv fort.95 /${disk}/$SAT/products/glb/${STAGE}/$ARC.$LABEL
+mv ftn97 /${disk}/$SAT/telem/$ARC.$LABEL
+#
+
+#
+#######################################################################
+#                                                                     #
+#               Create DATACAT Files                                  #
+#                                                                     #
+#######################################################################
+#
+
+#if [ "${CASE}" = "EMT" ]; then
+
+  $SCRIPTS/MAKE_DATA_CATALOG_P2 $ARC.$LABEL $SAT ${CASE} $STAGE
+
+#fi
+
+#
+#######################################################################
+#                                                                     #
+#               Process Corrections File                              #
+#                                                                     #
+#######################################################################
+#
+if [ -s /${disk}/$SAT/corrections/${CASE}/${STAGE}/$ARC.$LABEL ]; then
+
+  $SCRIPTS/MAKE_COR_FILE $ARC $LABEL $SAT ${disk} $CASE $STAGE
+
+fi
+
+#mv ftn80 ftn10
+
+#  /space/users/epavlis/EXECUTABLES/read_vmat.x > /${disk}/$SAT/output/${CASE}/${STAGE}/R_V.$ARC.$LABEL
+
+#mv ftn11 /${disk}/$SAT/vmat/$ARC.$LABEL.P182
+
+gzip -f /${disk}/$SAT/output/${CASE}/${STAGE}/$ARC.$LABEL
+gzip -f /${disk}/$SAT/punchdout/${CASE}/${STAGE}/$ARC.$LABEL
+gzip -f /${disk}/$SAT/orbtvu/car/$ARC.$LABEL
+gzip -f /${disk}/$SAT/summaries/${CASE}/${STAGE}/$ARC.$LABEL
+gzip -f /${disk}/$SAT/orbtvu/kep/$ARC.$LABEL
+gzip -f /${disk}/$SAT/corrections/${CASE}/${STAGE}/$ARC.$LABEL
+gzip -f /${disk}/$SAT/biaschk/$ARC.$LABEL
+gzip -f /${disk}/$SAT/simdat/$ARC.$LABEL
+gzip -f /${disk}/$SAT/telem/$ARC.$LABEL
+#gzip -f /${disk}/$SAT/emat/${STAGE}/$ARC.$LABEL 
+#gzip -f /${disk}/$SAT/vmat/$ARC.$LABEL 
+#
+#--------------------------------------------------
+
+#   If this is an EMT case, then convert and save orbits, otherwise NOT !
+
+if [ "${CASE}" = "EMT" ]; then
+
+
+#--------------------------------------------------
+ls -al
+#
+cp fort.30 /${disk}/$SAT/traj/${ARC}.${LABEL}.orbfil
+gzip -f /${disk}/$SAT/traj/${ARC}.${LABEL}.orbfil
+#
+#cp fort.30 /${disk}/$SAT/traj/$STAGE/${ARC}.${LABEL}.orbfil
+#gzip -f /${disk}/$SAT/traj/${STAGE}/${ARC}.${LABEL}.orbfil
+#
+#--------------------------------------------------
+#
+#######################################################################
+#                                                                     #
+#               Run Trajectory Conversion Program                     #
+#                                                                     #
+#######################################################################
+#
+#
+
+  if [ -s ORBFIL ]; then
+
+  \rm ftn05
+
+  #
+  ln -s /umbc/research/epavlis/MISSIONS/d_base/tabs/mstr.current gdntable.mst
+
+  /umbc/research/epavlis/EXECUTABLES/tj2rvg2015_64.x > out6
+# /umbc/research/epavlis/EXECUTABLES/tj2rvg.x > out6
+
+  #
+  cat out6
+  mv fort.40 /${disk}/$SAT/traj/${STAGE}/RVG/${ARC}.${LABEL}.rvg   
+  mv fort.50 /${disk}/$SAT/traj/${STAGE}/STK/${ARC}.${LABEL}.stk
+
+  echo $ARC.$LABEL > $MAIN_PATH/INFILES/rv2sp13_INFILE.$SAT
+  echo $ARC.$LABEL > $MAIN_PATH/INFILES/INF_OPS_AS/rv2sp13_INFILE.$SAT
+
+  fi
+
+fi
+
+#######################################################################
+#                                                                     #
+#                     Process the Residuals                           #
+#                                                                     #
+#######################################################################
+
+if [ -s fort.19 ]; then
+
+cp fort.19 /${disk}/$SAT/residuals/${CASE}/${STAGE}/$ARC.$LABEL
+chmod 775 /${disk}/$SAT/residuals/${CASE}/${STAGE}/$ARC.$LABEL
+
+cp fort.19 residsN
+
+utc2gps=0
+infil=residsN
+
+
+echo $utc2gps >binres.in5
+echo $infil >>binres.in5
+
+
+#/umbc/research/epavlis/EXECUTABLES/binresXTND07c.x
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/binresXTND07c_p2.x
+cp residsN.ascii  TTD
+
+grep "Reference Time MJD:" TTD > TTA
+cut -c20-40 TTA > TTB
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/TIME_RES_p2.x
+read YRR MR DRR < TTC
+
+if [ "$YRR" -gt "50" -a "$YRR" -le "99" ];then
+
+ YRa=`expr $YRR + 1900`
+
+elif [ "$YRR" -ge "00" -a "$YRR" -le "50" ];then
+
+ YRa=`expr $YRR + 2000`
+
+fi
+printf "$YRa $MR $DRR" > TIMEb
+#
+#
+## Program split into part up and part down
+#
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/res_up_down_p2.x
+## Change geocentric coordinates to topocentric (azimuth and elevation) and put fi and lambda for two cases: up and down
+#
+cp residsN.ascii  TTE
+grep  "Reference Time MJD:" TTE >  rRT 
+grep -v "Reference Time MJD:" TTE >  residsN.ascii 
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/cord_p2.x
+#
+## Format TIMEa: 2004 z40808
+#
+echo "${arc_yy} ${ARC}" > TIMEa
+#
+## Merit data to new file
+#
+##### for regular runs
+####200304 zcat /${disk}/$SAT/d_base/data/MRT2/${YR}.${SAT}.mr2.Z > merit-data
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/res_bias3_p2.x
+##Format TIMEb: 2004 08 08
+#
+infile2=TIMEb
+#
+printf "$YRa $MR $DRR" > TIMEb
+read YY MM DD < TIMEb
+###################read YY MM DD < TIMEb
+#
+##Format TIMEc: 04221
+#
+#
+#/space/users/epavlis/scripts/ymd2ydoy $YY $MM $DD > TIMEc
+/umbc/research/epavlis/scripts/ymd2ydoy $YY $MM $DD > TIMEc
+#
+sort -u -n -k 10,10 residsN.ascii_last2 > residsN.ascii_last2_c
+#
+##Program: (1) reads files TIME, TIMEc.
+## (2) Make new file TIMEc
+##Format TMIEd - two line-
+##0422105268708 - beginning of arc
+##0422784790508 - ending of arc
+##(3) cuts file Merit data for the beginning and ending of arc.
+##(4) joins data from residual files with data from MERIT II.
+#
+#
+cp residsN.ascii_last2_c residsN.ascii_last2
+
+#
+#/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/addMRT2resXTND_p2.x
+#
+#chmod 755 *.*
+#
+mv residsN.ascii_last /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.obsresxtnd
+mv residsN.ascii_last2_c /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.resxtnd
+#
+
+sed -n "1,1p" residsN.ascii > t0
+sed -n "2,\$p" residsN.ascii > t1
+
+sort -b -n -k 4,4 -k 6,6 -k 9,9  -o t5 t1
+
+cat t0 t5 > sort_by_config
+sort -b -n -k 9,9  residsN.ascii -o residsN.ascii
+#
+cp rRT rRT2
+cat residsN.ascii >> rRT2
+cp  rRT2  residsN.ascii 
+#
+mv residsN.ascii /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.ascii
+cat sort_by_config >> rRT
+cp rRT sort_by_config 
+mv sort_by_config /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.sort_by_config
+
+#
+gzip -f /${disk}/$SAT/residuals/${CASE}/${STAGE}/${ARC}.${LABEL}
+#
+gzip -f /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.ascii
+gzip -f /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.sort_by_config
+
+zcat /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.ascii.gz > ${ARC}.${LABEL}
+
+
+
+
+
+fi
+#######################################################################
+#                                                                     #
+#          RESIDUAL to plot                                           #
+#######################################################################
+cp /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.resxtnd  res-file_org
+zcat /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.ascii.gz >  rRT
+#/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/resfile2plot_p2.x
+#/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/resfile_200304.x
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/resfile_one.x
+
+cp RES2PLOT /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.RES2PLOT
+cp RES2PLOT /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${Date_NEW_ARC}.${LABEL}.RES2PLOT
+echo "${ARC}" > /umbc/epavlis/data01/raid2/rexis/daily_arc.txt
+#cat RES2PLOT >> /umbc/epavlis/data01/raid2/rexis/daily_arc.txt
+
+if [ "${LABEL}" = "wMZ0" -o "${LABEL}" = "wMZZ0" ]; then
+
+file=RES2PLOT
+minsize=100    # 
+actualsize=$(du -k "$file" | cut -f1)
+if [ $actualsize -le $minsize ]; then
+     echo "URGENT: RES2PLOTS file for ARC ${ARC} is wrong" > 2mail
+     echo "/${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.RES2PLOT" >> 2mail
+     echo $actualsize $file  $maxsize >> 2mail
+mailx -s "URGENT: RES2PLOTS file for ARC ${ARC} is wrong" magdak@umbc.edu < 2mail
+else
+
+echo "/${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.RES2PLOT" > 2mail
+mailx -s "RES2PLOTS file for ARC ${ARC}" magdak@umbc.edu < 2mail
+mailx -s "RES2PLOTS file for ARC ${ARC}" epavlis@umbc.edu < 2mail
+mailx -s "RES2PLOTS file for ARC ${ARC}" evans@umbc.edu < 2mail
+
+fi
+fi
+
+
+
+gzip -f /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.resxtnd
+gzip -f /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${Date_NEW_ARC}.${LABEL}.RES2PLOT
+gzip -f /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.RES2PLOT
+gizp -f /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.obsresxtnd
+
+#######################################################################
+#                                                                     #
+#       Combine the Residuals and Corrections files into one          #
+#                                                                     #
+#######################################################################
+
+if [ -s /${disk}/$SAT/corrections/${CASE}/${STAGE}/CORR.${ARC}.${LABEL}.gz ]; then
+
+  if [ -s ${ARC}.${LABEL} ]; then
+
+    zcat /${disk}/$SAT/corrections/${CASE}/${STAGE}/CORR.${ARC}.${LABEL}.gz > CORR.tmp
+
+    sort -n -k 1,1 CORR.tmp -o CORR.tmp.s
+
+    mv CORR.tmp.s CORR.tmp
+
+    sort -n -k 2,2 ${ARC}.${LABEL} -o ${ARC}.${LABEL}.s
+
+    mv ${ARC}.${LABEL}.s ${ARC}.${LABEL}
+
+    $SCRIPTS/MAKE_COR+RES_FILE ${ARC}.${LABEL} CORR.tmp
+
+    zcat /${disk}/$SAT/orbtvu/car/$ARC.${LABEL}.gz > tmp0
+    sed -n "58,\$p" tmp0 > tmp1
+    /bin/grep -v '[A-Z]' tmp1 > tmp2
+    echo "                                            Latitude Longitude Height " > ORBT.tmp
+    cut -c98-133 tmp2 >> ORBT.tmp
+    paste -d" " ${ARC}.${LABEL}.cor ORBT.tmp > CORR+ORBT.tmp
+
+    gzip -f CORR+ORBT.tmp
+    mv CORR+ORBT.tmp.gz /${disk}/$SAT/corrections/${CASE}/${STAGE}/${ARC}.${LABEL}.corb.gz
+    cp ${ARC}.${LABEL}.cor /${disk}/$SAT/corrections/${CASE}/${STAGE}/${ARC}.${LABEL}.cor
+        gzip -f /${disk}/$SAT/corrections/${CASE}/${STAGE}/${ARC}.${LABEL}.cor
+  fi
+
+fi
+#
+#
+# -----------------------------------------------------------
+#
+ls -al
+
+#
+# End of IIE
+#
+
+cd ..
+\rm -r gdyn$tdir

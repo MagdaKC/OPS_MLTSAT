@@ -1,0 +1,773 @@
+#  RUN_STR
+
+#
+
+SCR_NAME=RUN_SERIES_OPS_MLTSAT_WEEKLY2020
++ SCR_NAME=RUN_SERIES_OPS_MLTSAT_WEEKLY2020
+SCR_PARM=2
++ SCR_PARM=2
+SCR_LIST="CASE ETA_IN"
++ SCR_LIST='CASE ETA_IN'
+SCR_VERS=200204.0
+
++ SCR_VERS=200204.0
+SCR_DBG="#"
++ SCR_DBG='#'
+export SCR_DBG
+
+
++ export SCR_DBG
+Date=`date +%y%m%d`
+
+date +%y%m%d
++ date +%y%m%d
++ Date=200320
+DateTime=`date '+DATE: %m/%d/%y  TIME: %H:%M:%S'`
+
+date '+DATE: %m/%d/%y  TIME: %H:%M:%S'
++ date '+DATE: %m/%d/%y  TIME: %H:%M:%S'
++ DateTime='DATE: 03/20/20  TIME: 11:28:58'
+echo " # "
++ echo ' # '
+ # 
+echo " #  $SCR_NAME $* "
++ echo ' #  RUN_SERIES_OPS_MLTSAT_WEEKLY2020 RUN_SERIES_OPS_MLTSAT_DAILY2020_TEST_ARC_DR1+DR2_10 '
+ #  RUN_SERIES_OPS_MLTSAT_WEEKLY2020 RUN_SERIES_OPS_MLTSAT_DAILY2020_TEST_ARC_DR1+DR2_10 
+echo " # "
++ echo ' # '
+ # 
+echo " #  Version $SCR_VERS "
++ echo ' #  Version 200204.0 '
+ #  Version 200204.0 
+echo " # "
++ echo ' # '
+ # 
+echo " #  Run Date $DateTime "
++ echo ' #  Run Date DATE: 03/20/20  TIME: 11:28:58 '
+ #  Run Date DATE: 03/20/20  TIME: 11:28:58 
+echo " # "
+
+
++ echo ' # '
+ # 
+CASE=DAILY
+
++ CASE=DAILY
+if [ "$CASE" = "WEEKLY" ]; then
+
+  ARC_LEN=8
+  ARC_LEN=7
+  DELTA=7
+  ACCEL_NUM_S=2
+  ACCEL_NUM_A=1
+  LVER=wMZZ
+  TYPE_DR=DRWC
+  TYPE_EMT=EMTWC
+  WEIGHT=100
+  WEIGHT=
+  SNX_VER=1
+
+#200213 GRAVITY_MDL=GGM02C.90x90
+#200213 GRAVITY_MDL=GGM05S_30x30
+#200213 GRAVITY_MDL=GGM05S_120x120 
+#200213 GRVTIM=GRVTIM110310
+#200213 base on v230
+
+ GRAVITY_MDL=GGM05C-GRAVTOP_120x120_adj30x30
+ GRAV_TOP=GRAVTOP_CSR_2019.11.01+JGF_2019.11.03-2021.12.30_d      # 190104
+ GRVTIM=JCET_CSR20181211_GSM+GAC.7d/JCET_60x60
+ GRVTIM=JCET_CSR20181211_GSM+GAC.7d/JCET_6x6
+
+  export GRAVITY_MDL GRVTIM GRAV_TOP
+
+  ETIDE_MDL=NULL
+  ETIDE_MDL=etides
+  ETIDE_MDL=etides+poletide
+  #200213 base on v230
+  ETIDE_MDL=TIDES+etides_RAY_2018
+
+
+  OTIDE_MDL=otide_csr4/otide_csr4
+  OTIDE_MDL=otide_fes2002/otide_fes2002
+  OTIDE_MDL=tides.ray00_wAIR
+  OTIDE_MDL=otide_got00/otide_got00
+  OTIDE_MDL=otide_got00/40otide_got00
+  OTIDE_MDL=otide_got00/30otide_got00
+  OTIDE_MDL=otide_got00/20otide_got00
+  OTIDE_MDL=GOT47/20otides_got4.7+airTide_RayPonte03
+  OTIDE_MDL=GOT47/60otides_got4.7
+  OTIDE_MDL=GOT47/60otides_got4.7+airTide_RayPonte03
+#200213 base on v230
+  OTIDE_MDL=GOT4.10/60otides_got4p10c+Air_Tides_got4.7.d
+
+   HFCOM_MDL=HFCOM/HFCOM_GOT4.10c
+   HFEOP_MDL=HFEOP/HFEOP_DESAIwLib
+
+ 
+  export ETIDE_MDL OTIDE_MDL HFCOM_MDL HFEOP_MDL
+
+  CURRENT_APLO=050210
+
+  export CURRENT_APLO
+
+  IERS_CPP_CENTER=JCT
+  IERS_CPP_TECHNQ=L
+  IERS_CPP_LENGTH=7
+  OUR_VERSION=05
+
+  export IERS_CPP_CENTER IERS_CPP_TECHNQ IERS_CPP_LENGTH OUR_VERSION
+elif [ "$CASE" = "DAILY" ]; then
+
+  ARC_LEN=8
+  ARC_LEN=7
+  DELTA=1
+  ACCEL_NUM_S=2
+  ACCEL_NUM_A=1
+  LVER=wMZZ
+  TYPE_DR=DRWC
+  TYPE_EMT=EMTWC
+  WEIGHT=100
+  WEIGHT=
+  SNX_VER=1
+
+
+
+   GRAVITY_MDL=GGM05C-GRAVTOP_120x120_adj30x30
+   GRAV_TOP=GRAVTOP_CSR_2019.11.01+JGF_2019.11.03-2021.12.30_d      # 190104
+   GRVTIM=JCET_CSR20181211_GSM+GAC.7d/JCET_60x60
+#   GRVTIM=JCET_CSR20181211_GSM+GAC.7d/JCET_6x6
+#02020319
+   GRVTIM=JCET_CSR20190811_GSM+GAC.1d/JCET_6x6
+
+
+   export GRAVITY_MDL GRVTIM GRAV_TOP
+
+
+  ETIDE_MDL=NULL
+  ETIDE_MDL=etides.fxd
+  #200213 base on v230
+  ETIDE_MDL=TIDES+etides_RAY_2018
+
+
+  OTIDE_MDL=otide_csr4/otide_csr4.fxd
+  OTIDE_MDL=otide_fes2002/otide_fes2002.fxd
+  OTIDE_MDL=tides.ray00_wAIR.fxd
+  OTIDE_MDL=otide_got00/otide_got00.fxd
+  OTIDE_MDL=otide_got00/40otide_got00.fxd
+  OTIDE_MDL=otide_got00/30otide_got00.fxd
+  OTIDE_MDL=otide_got00/20otide_got00.fxd
+#200213 base on v230
+    OTIDE_MDL=GOT4.10/60otides_got4p10c+Air_Tides_got4.7.d
+
+    HFCOM_MDL=HFCOM/HFCOM_GOT4.10c
+	HFEOP_MDL=HFEOP/HFEOP_DESAIwLib
+
+  
+ export ETIDE_MDL OTIDE_MDL HFCOM_MDL HFEOP_MDL
+
+
+  CURRENT_APLO=050210
+
+  export CURRENT_APLO
+
+  IERS_CPP_CENTER=JCT
+  IERS_CPP_TECHNQ=L
+  IERS_CPP_LENGTH=7
+  OUR_VERSION=05
+
+  export IERS_CPP_CENTER IERS_CPP_TECHNQ IERS_CPP_LENGTH OUR_VERSION
+
+elif [ "$CASE" = "MONTHLY" ]; then
+
+  ARC_LEN=28
+  DELTA=28
+  ACCEL_NUM_S=7
+  ACCEL_NUM_A=4
+  LVER=m
+  TYPE_DR=DRM
+  TYPE_EMT=EMTM
+
+  ETIDE_MDL=NULL
+  ETIDE_MDL=etides.fxd
+
+  OTIDE_MDL=otide_csr4/otide_csr4.fxd
+  OTIDE_MDL=otide_fes2002/otide_fes2002.fxd
+  OTIDE_MDL=tides.ray00_wAIR.fxd
+  OTIDE_MDL=otide_got00/otide_got00.fxd
+  OTIDE_MDL=otide_got00/20otide_got00.fxd
+  OTIDE_MDL=otide_got00/30otide_got00.fxd
+  OTIDE_MDL=otide_got00/40otide_got00.fxd
+  
+  export ETIDE_MDL OTIDE_MDL
+
+  CURRENT_APLO=050210
+
+  export CURRENT_APLO
+
+fi
+
++ [ DAILY '=' WEEKLY ]
++ [ DAILY '=' DAILY ]
++ ARC_LEN=8
++ ARC_LEN=7
++ DELTA=1
++ ACCEL_NUM_S=2
++ ACCEL_NUM_A=1
++ LVER=wMZZ
++ TYPE_DR=DRWC
++ TYPE_EMT=EMTWC
++ WEIGHT=100
++ WEIGHT=''
++ SNX_VER=1
++ GRAVITY_MDL=GGM05C-GRAVTOP_120x120_adj30x30
++ GRAV_TOP=GRAVTOP_CSR_2019.11.01+JGF_2019.11.03-2021.12.30_d
++ GRVTIM=JCET_CSR20181211_GSM+GAC.7d/JCET_60x60
++ GRVTIM=JCET_CSR20190811_GSM+GAC.1d/JCET_6x6
++ export GRAVITY_MDL GRVTIM GRAV_TOP
++ ETIDE_MDL=NULL
++ ETIDE_MDL=etides.fxd
++ ETIDE_MDL=TIDES+etides_RAY_2018
++ OTIDE_MDL=otide_csr4/otide_csr4.fxd
++ OTIDE_MDL=otide_fes2002/otide_fes2002.fxd
++ OTIDE_MDL=tides.ray00_wAIR.fxd
++ OTIDE_MDL=otide_got00/otide_got00.fxd
++ OTIDE_MDL=otide_got00/40otide_got00.fxd
++ OTIDE_MDL=otide_got00/30otide_got00.fxd
++ OTIDE_MDL=otide_got00/20otide_got00.fxd
++ OTIDE_MDL=GOT4.10/60otides_got4p10c+Air_Tides_got4.7.d
++ HFCOM_MDL=HFCOM/HFCOM_GOT4.10c
++ HFEOP_MDL=HFEOP/HFEOP_DESAIwLib
++ export ETIDE_MDL OTIDE_MDL HFCOM_MDL HFEOP_MDL
++ CURRENT_APLO=050210
++ export CURRENT_APLO
++ IERS_CPP_CENTER=JCT
++ IERS_CPP_TECHNQ=L
++ IERS_CPP_LENGTH=7
++ OUR_VERSION=05
++ export IERS_CPP_CENTER IERS_CPP_TECHNQ IERS_CPP_LENGTH OUR_VERSION
+ITRF_APRIORI=SLRF2014
++ ITRF_APRIORI=SLRF2014
+export ITRF_APRIORI
+
+
++ export ITRF_APRIORI
+TDF2GDYN=tdf0901p0_i64_sun_RM=8.x
+
++ TDF2GDYN=tdf0901p0_i64_sun_RM=8.x
+export TDF2GDYN
+
+
++ export TDF2GDYN
+GDN_2S=gs1507p1_i64.x   ##new 2016-03-22
+
++ GDN_2S=gs1507p1_i64.x
+GDN_2S=PE2_EXECi64/gs1810p2_i64_PE2.x
+
+
++ GDN_2S=PE2_EXECi64/gs1810p2_i64_PE2.x
+GDN_2E=ge1507p6_i64.x #new 2016-03-22
+
++ GDN_2E=ge1507p6_i64.x
+GDN_2E=PE2_EXECi64/ge1810p09_i64_PE2.x
+
++ GDN_2E=PE2_EXECi64/ge1810p09_i64_PE2.x
+export GDN_2S GDN_2E
+
++ export GDN_2S GDN_2E
+#exec > /tmp/magdak/RUN_SERIES_OPS_MLTSAT_WEEKLY2020.${CASE}.$ARC.$Date.ecp1.log 2>&1
+
+mkdir -p /tmp/magdak
++ mkdir -p /tmp/magdak
+#chmod -R 775 /tmp/magdak
+cd /tmp/magdak
++ cd /tmp/magdak
+mkdir ${CASE}$$
++ mkdir DAILY14857
+TMPP=/tmp/magdak/${CASE}$$
++ TMPP=/tmp/magdak/DAILY14857
+cd ${CASE}$$
++ cd DAILY14857
+export TMPP
++ export TMPP
+MAIN_PATH=/umbc/epavlis/data01/LOCAL/magdak
++ MAIN_PATH=/umbc/epavlis/data01/LOCAL/magdak
+SCRIPTS=/umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT
++ SCRIPTS=/umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT
+DISK=umbc/epavlis/data01/LOCAL/magdak/MISSIONS
+
++ DISK=umbc/epavlis/data01/LOCAL/magdak/MISSIONS
+SERVICE=ILRS
++ SERVICE=ILRS
+ILRS_AC=jcet
+
+
++ ILRS_AC=jcet
+ITR=0
++ ITR=0
+VER=${LVER}
++ VER=wMZZ
+#GTR=3
+GTR=2
++ GTR=2
+PROJ=.
++ PROJ=.
+SUBSOL=.
++ SUBSOL=.
+DELETE=OUT
++ DELETE=OUT
+INSERT=NONE
+
+
++ INSERT=NONE
+export CASE ARC_LEN ACCEL_NUM_S ACCEL_NUM_A DELTA MAIN_PATH SCRIPTS SNX_VER ETA_IN
+
++ export CASE ARC_LEN ACCEL_NUM_S ACCEL_NUM_A DELTA MAIN_PATH SCRIPTS SNX_VER ETA_IN
+export ITR LVER VER GTR PROJ SUBSOL DELETE INSERT SERVICE DISK WEIGHT ILRS_AC
+
+
++ export ITR LVER VER GTR PROJ SUBSOL DELETE INSERT SERVICE DISK WEIGHT ILRS_AC
+EPOCH_DIR=$MAIN_PATH/INFILES/INF_OPS_MLTSAT/EPOCH_BLK_${SERVICE}/${CASE}
++ EPOCH_DIR=/umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/EPOCH_BLK_ILRS/DAILY
+MBIAS_DIR=$MAIN_PATH/INFILES/INF_OPS_MLTSAT/MBIAS_BLK_${SERVICE}/${CASE}
+
++ MBIAS_DIR=/umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/MBIAS_BLK_ILRS/DAILY
+export EPOCH_DIR MBIAS_DIR
+
+
+
+
+
++ export EPOCH_DIR MBIAS_DIR
+#--------------------------------------
+#  Start the process
+#--------------------------------------
+
+
+#  Set the arc name, the start/stop times, and the ACCELs end-times:
+
+$SCRIPTS/ARC_SETUP_DAILY $DELTA $MAIN_PATH $CASE > o.ARC_SETUP 2>&1 
+
++ /umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT/ARC_SETUP_DAILY 1 /umbc/epavlis/data01/LOCAL/magdak DAILY
++ 1> o.ARC_SETUP 2>& 1
+#exit 2222
+#
+#  Read year, doy, date and arc-name for the old, current and future arcs:
+#
+
+read OYEAR ODOY Date_OLD_ARC OLD < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_OLD.$CASE
++ read OYEAR ODOY Date_OLD_ARC OLD
++ 0< /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_OLD.DAILY
+read NYEAR NDOY Date_NEW_ARC ARC < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.$CASE
++ read NYEAR NDOY Date_NEW_ARC ARC
++ 0< /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.DAILY
+read XYEAR XDOY Date_NXT_ARC NXT < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.$CASE
++ read XYEAR XDOY Date_NXT_ARC NXT
++ 0< /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.DAILY
+read EYEAR EDOY Date_END_ARC END < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_END.$CASE
+
++ read EYEAR EDOY Date_END_ARC END
++ 0< /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_END.DAILY
+read Date_MID_ARC < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/MID-ARC_INFO.$CASE
++ read Date_MID_ARC
++ 0< /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/MID-ARC_INFO.DAILY
+read SNX_DATE < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/SINEX_DATE_INFO.$CASE
+
++ read SNX_DATE
++ 0< /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/SINEX_DATE_INFO.DAILY
+export NDOY
++ export NDOY
+#
+# Set the version of a LAGEOS-only IERS SINEX = OUR_VERSION as default
+# in the case we have ETALON data added, this will be modified after
+# processing the ETALON data to OUR_VERSION + 10
+#
+
+  L12_VERSION=${OUR_VERSION}
+
++ L12_VERSION=05
+export SNX_DATE L12_VERSION
+
++ export SNX_DATE L12_VERSION
+#
+#--------------------------------------
+#  Generate the Atmospheric Loading File:
+#--------------------------------------
+#
+
+###$SCRIPTS/MAKE_APLO $NDOY $NYEAR $XDOY $XYEAR $ARC > o.MAKE_APLO 2>&1
+
+
+#
+#--------------------------------------
+#  Get the SLR QL data from CDDIS or EDC:
+#--------------------------------------
+#
+
+YY=`echo $NYEAR | cut -c3-4`
+echo $NYEAR | cut -c3-4
++ cut -c3-4
++ echo 2020
++ YY=20
+#
+##  For analyzing past arcs, do not need to re-get the QL data! But we will need this for the operational script!!!
+#
+
+#$SCRIPTS/4SAT_QL_2_TDF_ARC $NYEAR $YY ${OYEAR}${Date_OLD_ARC} ${NYEAR}${Date_NEW_ARC} > o.4SAT_QL_2_TDF_ARC 2>&1
+
+#
+#------------------------------------------------
+#  Set the name of the Global Solution to be used:
+#------------------------------------------------
+#
+
+GLOBAL_CMAT=${SERVICE}_03
++ GLOBAL_CMAT=ILRS_03
+#GLOBAL_CMAT=${SERVICE}_${YY}
+
+export GLOBAL_CMAT
+
++ export GLOBAL_CMAT
+#
+#------------------------------------------------
+#  Propagate the Sites' file to the Mid-Arc Epoch:
+#------------------------------------------------
+#
+
+## First figure out where you are wrt Arequipa quake:
+#
+#  arc_mmdd=`echo ${Date_NEW_ARC}|cut -c3-6`
+#  arc_date=$NYEAR$arc_mmdd
+#
+#  if [ "$arc_date" -lt "20010624" ];then
+#
+##  pre-Arequipa quake positions:
+#
+#    ITRF_2_PROPAGATE=ITRF2000@970101
+#
+#  elif [ "$arc_date" -ge "20010624" ];then
+#
+##  post-Arequipa quake positions:
+#
+#    ITRF_2_PROPAGATE=ITRF2000@970101q
+#
+#  fi
+
+    ITRF_2_PROPAGATE=$ARC
++ ITRF_2_PROPAGATE=w00303
+  export ITRF_2_PROPAGATE
+
+
+
++ export ITRF_2_PROPAGATE
+#$SCRIPTS/PROPAGATE_SITES08 $CASE $ARC > o.PROPAGATE_SITES.$CASE.$ARC.$SVN 2>&1
+
+#
+#----------------------------------------------
+#  Now generate the arc-setups for the new arcs:
+#----------------------------------------------
+#
+#
+#  For each S/C go through the following steps:
+#
+# a) turn last arc (from EMT punch, i.e. EMT2DR) and save ELEMS records
+#
+# b) using above ELEMS and template, make new arc
+#
+# c) run the new arc (DR)
+#
+# d) turn the punch and re-run (DR) the arc
+#
+# e) turn the punch for EMAT and cut two EMATs, one for operational
+#    and one for the re-analysis series
+#
+# f) Update the Solution Number for this week
+#
+#----------------------------------------------
+#
+
+read SOL_NUM_OLD < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.${CASE}
+
++ read SOL_NUM_OLD
++ 0< /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.DAILY
+  SOL_NUM=`expr $SOL_NUM_OLD + 1`
+
+expr $SOL_NUM_OLD + 1
++ expr 009 + 1
++ SOL_NUM=10
+##
+## Make sure that SOL_NUM comprises 3 digits ONLY and EXACTLY 3 !      
+##
+
+printf "%3.3s\n" $SOL_NUM > ttt
++ printf '%3.3s\n' 10
++ 1> ttt
+sed "s/ /0/g" ttt > $MAIN_PATH/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.${CASE}
+
++ sed 's/ /0/g' ttt
++ 1> /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.DAILY
+read SOL_NUM < $MAIN_PATH/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.${CASE}
+
++ read SOL_NUM
++ 0< /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.DAILY
+echo $SOL_NUM
+
++ echo 010
+010
+PSOL_NUM=${SOL_NUM}
+
++ PSOL_NUM=010
+#     if [ $SOL_NUM -lt 10 ]; then
+#        PSOL_NUM=00$SOL_NUM
+
+#     elif [ $SOL_NUM -lt 100 -a $SOL_NUM -ge 10 ]; then
+#        PSOL_NUM=0$SOL_NUM
+#     fi
+
+#SOL_NUM=$PSOL_NUM
+
+
+
+#
+# Now generate the solution names for all versions of products:
+#
+
+SOL_L=L12__OPS${YY}${PSOL_NUM}
++ SOL_L=L12__OPS20010
+SOL_E=LE12_OPS${YY}${PSOL_NUM}
+
++ SOL_E=LE12_OPS20010
+export ARC Date_NEW_ARC SOL_NUM PSOL_NUM
+
++ export ARC Date_NEW_ARC SOL_NUM PSOL_NUM
+#
+#  We MUST change the NXT to NEW below, but when we start all over
+#
+
+SOL_LPP=L12__OPS${Date_END_ARC}
++ SOL_LPP=L12__OPS200310
+SOL_EPP=LE12_OPS${Date_END_ARC}
+
++ SOL_EPP=LE12_OPS200310
+export Date_EDN_ARC SOL_LPP SOL_EPP
+
++ export Date_EDN_ARC SOL_LPP SOL_EPP
+SOL_LN=L12_NEOS${Date_END_ARC}
++ SOL_LN=L12_NEOS200310
+SOL_EN=LE12NEOS${Date_END_ARC}
+
++ SOL_EN=LE12NEOS200310
+export SOL_LN SOL_EN
+
++ export SOL_LN SOL_EN
+SUBDIR=OPS
++ SUBDIR=OPS
+export SUBDIR
+
+
+
++ export SUBDIR
+#---------------------------------------------------
+
+
+#  Process STARLETTE
+
+
+#---------------------------------------------------
+
+
+
+#  STARLETTE:
+
+SVN=MLTSAT
++ SVN=MLTSAT
+SAT=MLTSAT
+
++ SAT=MLTSAT
+$SCRIPTS/GET_ELEMS_ALL_MLTSAT 2_turn_4_run_series.$CASE $SVN $ITR $VER $GTR $CASE $PROJ $SUBSOL $DELETE $INSERT > o.GET_ELEMS_ALL.$CASE.$SVN 2>&1
++ /umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT/GET_ELEMS_ALL_MLTSAT 2_turn_4_run_series.DAILY MLTSAT 0 wMZZ 2 DAILY . . OUT NONE
++ 1> o.GET_ELEMS_ALL.DAILY.MLTSAT 2>& 1
+ 
+
+#exit 20200228
+
+$SCRIPTS/MAKE_NEW_ARC $SAT $CASE $NYEAR $ARC > o.MAKE_NEW_ARC.$CASE.$SVN 2>&1 
+
++ /umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT/MAKE_NEW_ARC MLTSAT DAILY 2020 w00303
++ 1> o.MAKE_NEW_ARC.DAILY.MLTSAT 2>& 1
+#exit 20200228
+#exit 0
+export PROC_STEP=MLTSAT_DR0
+
++ PROC_STEP=MLTSAT_DR0
++ export PROC_STEP
+$SCRIPTS/RUN_GDN_SLR_IERS2010_RESXTND_2020_DAILY $ARC ${LVER}0 $SAT $YY $TYPE_DR . > o.RUN_GDN_SLR_DR_0.$CASE.$SVN 2>&1
++ /umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT/RUN_GDN_SLR_IERS2010_RESXTND_2020_DAILY w00303 wMZZ0 MLTSAT 20 DRWC .
++ 1> o.RUN_GDN_SLR_DR_0.DAILY.MLTSAT 2>& 1
+#exit 0
+
+
+#$SCRIPTS/RMS_OF_FIT_SLR_ALL $ARC.${LVER}0 $SVN $CASE DR > o.RMS_OF_FIT_SLR_ALL0.$CASE.$SVN 2>&1
+
+$SCRIPTS/TURN_SLR_ALL CURRENT_ARC_DR.$CASE $SVN 0 ${LVER}0 $GTR $CASE DR . . $DELETE $INSERT > o.TURN_SLR_ALL_DR0.$CASE.$SVN 2>&1
+
++ /umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT/TURN_SLR_ALL CURRENT_ARC_DR.DAILY MLTSAT 0 wMZZ0 2 DAILY DR . . OUT NONE
++ 1> o.TURN_SLR_ALL_DR0.DAILY.MLTSAT 2>& 1
+#exit 0
+export PROC_STEP=MLTSAT_DR1
+
++ PROC_STEP=MLTSAT_DR1
++ export PROC_STEP
+$SCRIPTS/RUN_GDN_SLR_IERS2010_RESXTND_2020_DAILY $ARC ${LVER}1 $SAT $YY $TYPE_DR . > o.RUN_GDN_SLR_DR_1.$CASE.$SVN 2>&1
+
++ /umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT/RUN_GDN_SLR_IERS2010_RESXTND_2020_DAILY w00303 wMZZ1 MLTSAT 20 DRWC .
++ 1> o.RUN_GDN_SLR_DR_1.DAILY.MLTSAT 2>& 1
+$SCRIPTS/RMS_OF_FIT_SLR_ALL $ARC.${LVERE}1 $SVN $CASE DR > o.RMS_OF_FIT_SLR_ALL_DR1.$SVN 2>&1
+
++ /umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT/RMS_OF_FIT_SLR_ALL w00303.1 MLTSAT DAILY DR
++ 1> o.RMS_OF_FIT_SLR_ALL_DR1.MLTSAT 2>& 1
+mailx -s "RMS LARES $ARC" magdak@umbc.edu < $MAIN_PATH/OUTFILES/RMS_Nobs_Elcut.$Date.$SAT
+
+
++ mailx -s 'RMS LARES w00303' magdak@umbc.edu
++ 0< /umbc/epavlis/data01/LOCAL/magdak/OUTFILES/RMS_Nobs_Elcut.200320.MLTSAT
+Null message body; hope that's ok
+$SCRIPTS/SHIFT_FILES_FORWARD $CASE $MAIN_PATH
+
+
+
++ /umbc/epavlis/data01/LOCAL/magdak/scripts/OPS_MLTSAT/SHIFT_FILES_FORWARD DAILY /umbc/epavlis/data01/LOCAL/magdak
+#  SHIFT_FILES_FORWARD
+
+#
+
+SCR_NAME=SHIFT_FILES_FORWARD
++ SCR_NAME=SHIFT_FILES_FORWARD
+SCR_PARM=2
++ SCR_PARM=2
+SCR_LIST="CASE MAIN_PATH"
++ SCR_LIST='CASE MAIN_PATH'
+SCR_VERS=050223.0
+
+
++ SCR_VERS=050223.0
+if [ `expr $#` -lt $SCR_PARM ]; then
+   echo "Usage: $SCR_NAME ${SCR_LIST}\007"
+   exit 101
+fi
+
+expr $#
++ expr 2
++ [ 2 -lt 2 ]
+DateTime=`date '+DATE: %m/%d/%y  TIME: %H:%M:%S'`
+
+date '+DATE: %m/%d/%y  TIME: %H:%M:%S'
++ date '+DATE: %m/%d/%y  TIME: %H:%M:%S'
++ DateTime='DATE: 03/20/20  TIME: 17:32:16'
+echo " # "
++ echo ' # '
+ # 
+echo " #  $SCR_NAME $* "
++ echo ' #  SHIFT_FILES_FORWARD DAILY /umbc/epavlis/data01/LOCAL/magdak '
+ #  SHIFT_FILES_FORWARD DAILY /umbc/epavlis/data01/LOCAL/magdak 
+echo " # "
++ echo ' # '
+ # 
+echo " #  Version $SCR_VERS "
++ echo ' #  Version 050223.0 '
+ #  Version 050223.0 
+echo " # "
++ echo ' # '
+ # 
+echo " #  Run Date $DateTime "
++ echo ' #  Run Date DATE: 03/20/20  TIME: 17:32:16 '
+ #  Run Date DATE: 03/20/20  TIME: 17:32:16 
+echo " # "
+
+
++ echo ' # '
+ # 
+CASE=${1:-WEEKLY}
++ CASE=DAILY
+MAIN_PATH=${2:-/space/users/magdak}
+
++ MAIN_PATH=/umbc/epavlis/data01/LOCAL/magdak
+# Shift now the files forward for the next round:
+
+echo "*** BEFORE SHIFT ***"
+
++ echo '*** BEFORE SHIFT ***'
+*** BEFORE SHIFT ***
+echo "For this run we used: "
++ echo 'For this run we used: '
+For this run we used: 
+cat $MAIN_PATH/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.WEEKLY
+
++ cat /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/SOLUTION_NO_FOR_LAST_RUN.WEEKLY
+140
+echo "ARC_SETUP_OLD.$CASE :"
++ echo 'ARC_SETUP_OLD.DAILY :'
+ARC_SETUP_OLD.DAILY :
+cat $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_OLD.$CASE
+
++ cat /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_OLD.DAILY
+2020 62 200302 w00302
+echo "ARC_SETUP_NEW.$CASE :"
++ echo 'ARC_SETUP_NEW.DAILY :'
+ARC_SETUP_NEW.DAILY :
+cat $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.$CASE
+
++ cat /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.DAILY
+2020 63 200303 w00303
+echo "ARC_SETUP_NXT.$CASE :"
++ echo 'ARC_SETUP_NXT.DAILY :'
+ARC_SETUP_NXT.DAILY :
+cat $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.$CASE
+
++ cat /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.DAILY
+2020 64 200304 w00304
+mv $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.$CASE $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_OLD.$CASE
++ mv /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.DAILY /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_OLD.DAILY
+mv $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.$CASE $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.$CASE
++ mv /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.DAILY /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.DAILY
+mv $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_FTR.$CASE $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.$CASE
++ mv /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_FTR.DAILY /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.DAILY
+mv $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_END_FTR.$CASE $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_END.$CASE
+
++ mv /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_END_FTR.DAILY /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_END.DAILY
+echo "*** AFTER SHIFT ***"
+
++ echo '*** AFTER SHIFT ***'
+*** AFTER SHIFT ***
+echo "ARC_SETUP_OLD.$CASE :"
++ echo 'ARC_SETUP_OLD.DAILY :'
+ARC_SETUP_OLD.DAILY :
+cat $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_OLD.$CASE
+
++ cat /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_OLD.DAILY
+2020 63 200303 w00303
+echo "ARC_SETUP_NEW.$CASE :"
++ echo 'ARC_SETUP_NEW.DAILY :'
+ARC_SETUP_NEW.DAILY :
+cat $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.$CASE
+
++ cat /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NEW.DAILY
+2020 64 200304 w00304
+echo "ARC_SETUP_NXT.$CASE :"
++ echo 'ARC_SETUP_NXT.DAILY :'
+ARC_SETUP_NXT.DAILY :
+cat $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.$CASE
+
++ cat /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_NXT.DAILY
+2020 65 200305 w00305
+echo "ARC_SETUP_END$CASE :"
++ echo 'ARC_SETUP_ENDDAILY :'
+ARC_SETUP_ENDDAILY :
+cat $MAIN_PATH/INFILES/INF_OPS_MLTSAT/ARC_SETUP_END$CASE
+
+
++ cat /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_ENDDAILY
+cat: /umbc/epavlis/data01/LOCAL/magdak/INFILES/INF_OPS_MLTSAT/ARC_SETUP_ENDDAILY: No such file or directory
+exit
++ exit
+exit 0
++ exit 0

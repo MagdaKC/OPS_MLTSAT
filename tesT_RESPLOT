@@ -1,0 +1,23 @@
+#!/bin/ksh
+#
+${SCR_DBG}set -xv
+set -xv
+
+disk=/umbc/epavlis/data01/LOCAL/magdak/MISSIONS
+SAT=MLTSAT
+STAGE=WEEKLY
+CASE=DR
+ARC=w00105
+LABEL=wMZ2
+Date_NEW_ARC=200105
+mkdir /tmp/tt_RR
+cd /tmp/tt_RR
+            zcat /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.ascii.gz >  rRT
+            cp rRT res-file_org
+             /umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/RES2PLOT_MLTSAT_200302.x
+            cp RES2PLOT /${disk}/$SAT/residuals_asci/${CASE}/${STAGE}/${Date_NEW_ARC}.${LABEL}.RES2PLOT
+            cp RES2PLOT /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.RES2PLOT
+            rm res-file_org res-file2 res-file rRT RT
+
+
+			exit 0

@@ -1,0 +1,48 @@
+#!/bin/ksh
+##                                                               ecp 000203
+## Usage: MAKE_4MBIAS svn
+##
+#
+
+
+${SCR_DBG}set -vx
+set -xv
+
+mkdir /tmp/SUM$$
+cd /tmp/SUM$$
+disk=/umbc/epavlis/data01/LOCAL/magdak/MISSIONS/MLTSAT/output/DR/WEEKLY/
+ARC=w00112
+LV=wMZ0.0
+LV=wMZ0
+LV=wMZZ0.0
+LV=wMZZ1
+zcat $disk/${ARC}.${LV}.gz  > t1
+
+
+arcline1=`sed -n "/1               RESIDUAL SUMMARY BY MEASUREMENT TYPE FOR ARC/=" t1 `
+#arcline2=`sed -n "/NUMBER OF WEIGHTED OBSERVATIONS =/=" t1 `
+echo $arcline1 > ppp1
+#echo $arcline2 > ppp2
+
+sed 's/\s\+/\n/g' ppp1 > ppp11
+#sed 's/\s\+/\n/g' ppp2 > ppp22
+
+
+#paste -d " " ppp11 ppp22 > ppp3
+
+
+while read start 
+do
+stop=` expr $start + 5 `
+sed -n "${start}p" t1 > t11 
+sed -n "${stop}p" t1 > t12 
+
+paste -d " " t11 t12 > t2
+cat t2 >> t3
+#exit 0
+done < ppp11
+
+cp t3 $disk/${ARC}.${LV}_SUM
+
+
+exit 0

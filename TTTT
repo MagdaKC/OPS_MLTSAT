@@ -1,0 +1,143 @@
+#!/bin/ksh
+#
+${SCR_DBG}set -xv
+set -xv
+mkdir /tmp/$$
+cd /tmp/$$
+
+disk=/umbc/epavlis/data01/LOCAL/magdak/MISSIONS
+SAT=MLTSAT
+STAGE=WEEKLY
+ARC=w00112
+ARC=w00119
+LABEL=wMZZ0
+LABEL=wMZZ1
+CASE=DR
+utc2gps=0
+infil=residsN
+zcat /umbc/epavlis/data01/LOCAL/magdak/MISSIONS/MLTSAT/residuals/DR/WEEKLY/${ARC}.${LABEL}.gz > fort.19
+cp fort.19 residsN
+
+echo $utc2gps >binres.in5
+echo $infil >>binres.in5
+
+
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/binresXTND07c_p2.x
+
+cp residsN.ascii  TTD
+
+grep "Reference Time MJD:" TTD > TTA
+cut -c20-40 TTA > TTB
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/TIME_RES_p2.x
+read YRR MR DRR < TTC
+
+if [ "$YRR" -gt "50" -a "$YRR" -le "99" ];then
+
+ YRa=`expr $YRR + 1900`
+
+elif [ "$YRR" -ge "00" -a "$YRR" -le "50" ];then
+
+ YRa=`expr $YRR + 2000`
+
+fi
+printf "$YRa $MR $DRR" > TIMEb
+#
+#
+## Program split into part up and part down
+#
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/res_up_down_p2.x
+## Change geocentric coordinates to topocentric (azimuth and elevation) and put fi and lambda for two cases: up and down
+#
+cp residsN.ascii  TTE
+grep  "Reference Time MJD:" TTE >  rRT 
+grep -v "Reference Time MJD:" TTE >  residsN.ascii 
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/cord_p2.x
+#
+## Format TIMEa: 2004 z40808
+#
+echo "${arc_yy} ${ARC}" > TIMEa
+#
+## Merit data to new file
+#
+##### for regular runs
+####200304 zcat /${disk}/$SAT/d_base/data/MRT2/${YR}.${SAT}.mr2.Z > merit-data
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/res_bias3_p2.x
+##Format TIMEb: 2004 08 08
+#
+infile2=TIMEb
+#
+printf "$YRa $MR $DRR" > TIMEb
+read YY MM DD < TIMEb
+###################read YY MM DD < TIMEb
+#
+##Format TIMEc: 04221
+#
+#
+#/space/users/epavlis/scripts/ymd2ydoy $YY $MM $DD > TIMEc
+/umbc/research/epavlis/scripts/ymd2ydoy $YY $MM $DD > TIMEc
+#
+sort -u -n -k 10,10 residsN.ascii_last2 > residsN.ascii_last2_c
+#
+##Program: (1) reads files TIME, TIMEc.
+## (2) Make new file TIMEc
+##Format TMIEd - two line-
+##0422105268708 - beginning of arc
+##0422784790508 - ending of arc
+##(3) cuts file Merit data for the beginning and ending of arc.
+##(4) joins data from residual files with data from MERIT II.
+#
+#
+cp residsN.ascii_last2_c residsN.ascii_last2
+
+#
+#/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/addMRT2resXTND_p2.x
+#
+#chmod 755 *.*
+#
+mv residsN.ascii_last /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.obsresxtnd
+mv residsN.ascii_last2_c /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.resxtnd
+#
+
+sed -n "1,1p" residsN.ascii > t0
+sed -n "2,\$p" residsN.ascii > t1
+
+sort -b -n -k 4,4 -k 6,6 -k 9,9  -o t5 t1
+
+cat t0 t5 > sort_by_config
+sort -b -n -k 9,9  residsN.ascii -o residsN.ascii
+#
+cp rRT rRT2
+cat residsN.ascii >> rRT2
+cp  rRT2  residsN.ascii 
+#
+mv residsN.ascii /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.ascii
+cat sort_by_config >> rRT
+cp rRT sort_by_config 
+mv sort_by_config /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.sort_by_config
+
+#
+gzip -f /${disk}/$SAT/residuals/${CASE}/${STAGE}/${ARC}.${LABEL}
+#
+gzip -f /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.ascii
+gzip -f /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.sort_by_config
+
+zcat /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.ascii.gz > ${ARC}.${LABEL}
+
+
+#######################################################################
+#                                                                     #
+#          RESIDUAL to plot                                           #
+#######################################################################
+
+cp /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.resxtnd  res-file_org
+zcat /${disk}/$SAT/residuals_ascii/${CASE}/${STAGE}/${ARC}.${LABEL}.ascii.gz >  rRT
+#/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/resfile_200304.x
+/umbc/epavlis/data01/LOCAL/magdak/EXECUTABLES/P2/resfile_one.x
+
+cp RES2PLOT /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${ARC}.${LABEL}.RES2PLOT
+#cp RES2PLOT /${disk}/$SAT/residuals_ascii_xtnd/${CASE}/${STAGE}/${Date_NEW_ARC}.${LABEL}.RES2PLOT_2
+#rm res-file_org res-file2 res-file rRT RT
+
+
+exit 0
+
