@@ -196,9 +196,18 @@ cp t1aa t1a
 
     nextline=`sed -n "/PREPRO/=" t0 `
     lastline=`expr $nextline + 1`
-    
-    sed -n "${arcline},${nextline}p" t0 >> t2
-    
+    nextline0=`expr $nextline - 1`
+##    sed -n "${arcline},${nextline}p" t0 >> t2
+   ####
+sed -n "${arcline},${nextline0}p" t0 >> t2
+cat /umbc/epavlis/data01/LOCAL/magdak/MISSIONS/d_base/obscor/DEFAULT_JCET_mean >> t2
+cat /umbc/epavlis/data01/LOCAL/magdak/MISSIONS/d_base/obscor/MIXED/${ARC} >> t2
+                        sed -n "${nextline}p" t0 >> t2
+
+
+
+
+   #####
 #    sed -n "1,\$p" all_OBSCOR.MASTER >> t2
 
     sed -n "1,\$p" $disk4/MASTER_SIGMA.current >> t2
