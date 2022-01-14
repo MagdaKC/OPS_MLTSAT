@@ -89,9 +89,9 @@ grep "D${Date_NEW_ARC}" $MAIN_PATH/INFILES/POLDYN_RECS_1975-2020_60x60  >> ftn05
 #cat /${disk}/${usr}/$SAT/d_base/comn/LNSTHR.1.${SV} >> ftn05
 #cat /${disk}/${usr}/$SAT/d_base/comn/LNSTHR.-1.${SV} >> ftn05
  
-#if [ "${CASE}" = "EMT" ]; then
+if [ "${CASE}" = "DR" ]; then
  cat /${disk}/$SAT/d_base/comn/LNSTHR.1.${SV} >> ftn05
-#fi
+fi
 
 #
 # poleut cards
